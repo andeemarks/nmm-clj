@@ -1,38 +1,60 @@
 (ns morris.core
-	(:require [loom.graph :refer :all]))
+	(:require 
+		[loom.graph :refer :all]
+		[loom.io :refer :all]
+		))
 
-(def g (graph [:A1 :D1]
-[:D1 :G1]
-[:G1 :G4]
-[:G4 :G7]
-[:G7 :D7]
-[:D7 :A7]
-[:A7 :A4]
-[:A4 :A1]
-[:C3 :D3]
-[:C3 :C4]
-[:D3 :E3]
-[:E3 :E4]
-[:C4 :C5]
-[:E4 :E5]
-[:C5 :D5]
-[:D5 :E5]
-[:B2 :D2]
-[:D2 :F2]
-[:B2 :B4]
-[:B4 :B6]
-[:B6 :D6]
-[:D6 :F6]
-[:F6 :F4]
-[:F4 :F2]
-[:B4 :C4]
-[:F4 :E4]
-[:D2 :D3]
-[:D6 :D5]
-[:D1 :D2]
-[:A4 :B4]
-[:D7 :D6]
-[:G4 :F4]))
+(def g (graph [:a1 :d1]
+			[:d1 :g1]
+			[:g1 :g4]
+			[:g4 :g7]
+			[:g7 :d7]
+			[:d7 :a7]
+			[:a7 :a4]
+			[:a4 :a1]
+			[:c3 :d3]
+			[:c3 :c4]
+			[:d3 :e3]
+			[:e3 :e4]
+			[:c4 :c5]
+			[:e4 :e5]
+			[:c5 :d5]
+			[:d5 :e5]
+			[:b2 :d2]
+			[:d2 :f2]
+			[:b2 :b4]
+			[:b4 :b6]
+			[:b6 :d6]
+			[:d6 :f6]
+			[:f6 :f4]
+			[:f4 :f2]
+			[:b4 :c4]
+			[:f4 :e4]
+			[:d2 :d3]
+			[:d6 :d5]
+			[:d1 :d2]
+			[:a4 :b4]
+			[:d7 :d6]
+			[:g4 :f4]))
+
+(def mills [
+		(subgraph g [:a1 :d1 :g1])
+		(subgraph g [:b2 :d2 :f1])
+		(subgraph g [:c3 :d3 :e3])
+		(subgraph g [:a4 :b4 :c4])
+		(subgraph g [:e4 :f4 :g4])
+		(subgraph g [:c5 :d5 :e5])
+		(subgraph g [:b6 :d6 :f6])
+		(subgraph g [:a7 :d7 :g7])
+		(subgraph g [:a1 :a4 :a7])
+		(subgraph g [:b2 :b4 :b6])
+		(subgraph g [:c3 :c4 :c5])
+		(subgraph g [:d1 :d2 :d3])
+		(subgraph g [:d5 :d6 :d7])
+		(subgraph g [:e3 :e4 :e5])
+		(subgraph g [:f2 :f4 :f6])
+		(subgraph g [:g1 :g4 :g7])
+		])
 
 (defn completed? [location-set]
 	(= 3 ((frequencies location-set) true)))
