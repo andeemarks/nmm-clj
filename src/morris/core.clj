@@ -4,7 +4,7 @@
 		[loom.io :refer :all]
 		))
 
-(def g (graph [:a1 :d1]
+(def board (graph [:a1 :d1]
 			[:d1 :g1]
 			[:g1 :g4]
 			[:g4 :g7]
@@ -38,26 +38,26 @@
 			[:g4 :f4]))
 
 (def mills [
-		(subgraph g [:a1 :d1 :g1])
-		(subgraph g [:b2 :d2 :f1])
-		(subgraph g [:c3 :d3 :e3])
-		(subgraph g [:a4 :b4 :c4])
-		(subgraph g [:e4 :f4 :g4])
-		(subgraph g [:c5 :d5 :e5])
-		(subgraph g [:b6 :d6 :f6])
-		(subgraph g [:a7 :d7 :g7])
-		(subgraph g [:a1 :a4 :a7])
-		(subgraph g [:b2 :b4 :b6])
-		(subgraph g [:c3 :c4 :c5])
-		(subgraph g [:d1 :d2 :d3])
-		(subgraph g [:d5 :d6 :d7])
-		(subgraph g [:e3 :e4 :e5])
-		(subgraph g [:f2 :f4 :f6])
-		(subgraph g [:g1 :g4 :g7])
+		(subgraph board [:a1 :d1 :g1])
+		(subgraph board [:b2 :d2 :f1])
+		(subgraph board [:c3 :d3 :e3])
+		(subgraph board [:a4 :b4 :c4])
+		(subgraph board [:e4 :f4 :g4])
+		(subgraph board [:c5 :d5 :e5])
+		(subgraph board [:b6 :d6 :f6])
+		(subgraph board [:a7 :d7 :g7])
+		(subgraph board [:a1 :a4 :a7])
+		(subgraph board [:b2 :b4 :b6])
+		(subgraph board [:c3 :c4 :c5])
+		(subgraph board [:d1 :d2 :d3])
+		(subgraph board [:d5 :d6 :d7])
+		(subgraph board [:e3 :e4 :e5])
+		(subgraph board [:f2 :f4 :f6])
+		(subgraph board [:g1 :g4 :g7])
 		])
 
-(defn completed? [location-set]
-	(= 3 ((frequencies location-set) true)))
+(defn completed-mill? [mills]
+	(= 3 ((frequencies mills) true)))
 
-(defn potential? [location-set]
-	(= 1 ((frequencies location-set) false)))
+(defn potential-mill? [mills]
+	(= 1 ((frequencies mills) false)))
