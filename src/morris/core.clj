@@ -39,7 +39,7 @@
 (def mills [
 	; horizontal mills
 	(make-mill :a1 :d1 :g1)
-	(make-mill :b2 :d2 :f1)
+	(make-mill :b2 :d2 :f2)
 	(make-mill :c3 :d3 :e3)
 	(make-mill :a4 :b4 :c4)
 	(make-mill :e4 :f4 :g4)
@@ -57,16 +57,33 @@
 	(make-mill :g1 :g4 :g7)
 	])
 
+(defn location-available? [location game-state]
+	; (println (str "Checking for availability of " location " in " game-state))
+	(nil? (location game-state)))
 
-(defn completed-mill? [mills]
-	(= 3 ((frequencies mills) true)))
+(defn check-for-completed-mill [mill game-state]
+	(let [nodes-in-mill (nodes mill)
+				; _ (println (str "Checking " nodes-in-mill))
+				first-node (first nodes-in-mill)
+				second-node (second nodes-in-mill)
+				third-node (last nodes-in-mill)]
+		(not (or (location-available? first-node game-state)
+				(location-available? second-node game-state)
+				(location-available? third-node game-state)))))
 
-(defn potential-mill? [mills]
-	(= 1 ((frequencies mills) false)))
+(defn check-for-completed-mills [game-state]
+	(let [completed-mills (map #(check-for-completed-mill % game-state) mills)]
+		(> (count (filter true? completed-mills)) 0)))
 
 (defn update-game [game piece destination]
 	(let [current-game-state (:game-state game)
-				destination-available? (nil? (destination current-game-state))]
+				destination-available? (location-available? destination current-game-state)]
+				
 		(if destination-available?
-			(assoc game :game-state (merge current-game-state {destination piece}))
+			(let [new-game-state (merge current-game-state {destination piece})
+						new-game (assoc game :game-state new-game-state)
+						mill-completed? (check-for-completed-mills new-game-state)]
+				(if mill-completed?
+					(assoc new-game :event "mill completed")
+					new-game))
 			(throw (IllegalStateException. (str "Location " destination " is already occupied"))))))

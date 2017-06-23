@@ -11,24 +11,10 @@
           updated-game (update-game game (first (:white-pieces game)) :a1)
           piece (first (:black-pieces updated-game))]      
       (update-game updated-game piece :a1) => (throws IllegalStateException)))
+  (fact "will generate an event if a mill is completed"
+    (let [game (init-game)
+          after-move-1 (update-game game (first (:white-pieces game)) :a1)
+          after-move-2 (update-game after-move-1 (second (:white-pieces after-move-1)) :a4)
+          piece (nth (:white-pieces after-move-2) 3)]      
+      (:event (update-game after-move-2 piece :a7)) => "mill completed"))
   )
-
-(facts "completed-mills"
-  (fact "have all three positions occupied"
-    (completed-mill? [true, true, true]) => true
-    (completed-mill? [false, true, true]) => false
-    (completed-mill? [true, false, true]) => false
-    (completed-mill? [true, true, false]) => false
-    (completed-mill? [true, false, false]) => false
-    (completed-mill? [false, false, false]) => false
-))
-
-(facts "potential-mills"
-  (fact "have one position unoccupied"
-    (potential-mill? [true, true, true]) => false
-    (potential-mill? [false, true, true]) => true
-    (potential-mill? [true, false, true]) => true
-    (potential-mill? [true, true, false]) => true
-    (potential-mill? [true, false, false]) => false
-    (potential-mill? [false, false, false]) => false
-))
