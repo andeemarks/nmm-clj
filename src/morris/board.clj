@@ -43,3 +43,6 @@
 	(make-mill :f2 :f4 :f6)
 	(make-mill :g1 :g4 :g7)
 	])
+
+	(defn location-exists? [location]
+		(has-node? (board) location))

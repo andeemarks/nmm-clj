@@ -30,14 +30,15 @@
 		(> (count (filter true? completed-mills)) 0)))
 
 (defn update-game [game piece destination]
-	(let [current-game-state (:game-state game)
-				destination-available? (location-available? destination current-game-state)]
-				
-		(if destination-available?
-			(let [new-game-state (merge current-game-state {destination piece})
-						new-game (assoc game :game-state new-game-state)
-						mill-completed? (check-for-completed-mills new-game-state)]
-				(if mill-completed?
-					(assoc new-game :event "mill completed")
-					new-game))
-			(throw (IllegalStateException. (str "Location " destination " is already occupied"))))))
+	(let [current-game-state (:game-state game)]
+
+		(if (board/location-exists? destination)				
+			(if (location-available? destination current-game-state)
+				(let [new-game-state (merge current-game-state {destination piece})
+							new-game (assoc game :game-state new-game-state)
+							mill-completed? (check-for-completed-mills new-game-state)]
+					(if mill-completed?
+						(assoc new-game :event "mill completed")
+						new-game))
+				(throw (IllegalStateException. (str "Location " destination " is already occupied"))))
+			(throw (IllegalArgumentException. (str "Location " destination " does not exist on board"))))))
