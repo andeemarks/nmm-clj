@@ -25,9 +25,18 @@
 				(location-available? second-node game-state)
 				(location-available? third-node game-state)))))
 
-(defn check-for-completed-mills [game-state]
-	(let [completed-mills (map #(check-for-completed-mill % game-state) board/mills)]
-		(> (count (filter true? completed-mills)) 0)))
+(defn mill-contains-recent-move? [recent-move mill]
+	(has-node? mill recent-move))
+
+(defn check-for-completed-mills [game-state recent-move]
+	(let [relevant-mills (filter #(mill-contains-recent-move? recent-move %) board/mills)
+				; _ (println game-state)
+				; _ (println recent-move)
+				; _ (println relevant-mills)
+				just-completed-mills (map #(check-for-completed-mill % game-state) relevant-mills)
+				; _ (println just-completed-mills)
+				]
+		(> (count (filter true? just-completed-mills)) 0)))
 
 (defn update-game [game piece destination]
 	(let [current-game-state (:game-state game)]
@@ -36,9 +45,9 @@
 			(if (location-available? destination current-game-state)
 				(let [new-game-state (merge current-game-state {destination piece})
 							new-game (assoc game :game-state new-game-state)
-							mill-completed? (check-for-completed-mills new-game-state)]
+							mill-completed? (check-for-completed-mills new-game-state destination)]
 					(if mill-completed?
 						(assoc new-game :event "mill completed")
-						new-game))
+						(assoc new-game :event nil)))
 				(throw (IllegalStateException. (str "Location " destination " is already occupied"))))
 			(throw (IllegalArgumentException. (str "Location " destination " does not exist on board"))))))

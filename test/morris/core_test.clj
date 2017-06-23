@@ -18,7 +18,7 @@
       (:event (update-game after-move-3 piece :b2)) => nil))
   )
 
-(facts "moving pieces"
+(future-facts "moving pieces"
   (fact "is legal if the location is unoccupied"
     (let [game (init-game)]
       (update-game game (first (:white-pieces game)) :a1) =not=> nil))
