@@ -19,9 +19,14 @@
   )
 
 (future-facts "moving pieces"
-  (fact "is legal if the location is unoccupied"
-    (let [game (init-game)]
-      (update-game game (first (:white-pieces game)) :a1) =not=> nil))
+  (fact "returns a new game state if the location is unoccupied"
+    (let [game (init-game)
+          updated-game (update-game game (first (:white-pieces game)) :a1)]
+       (board updated-game) =not=> nil
+       (white-pieces updated-game) =not=> nil
+       (black-pieces updated-game) =not=> nil
+       (game-state updated-game) =not=> nil
+       ))
   (fact "is illegal if the location does not exist"
     (let [game (init-game)]
       (update-game game (first (:white-pieces game)) :a11) => (throws IllegalArgumentException)))

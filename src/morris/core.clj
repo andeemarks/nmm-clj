@@ -30,11 +30,7 @@
 
 (defn check-for-completed-mills [game-state recent-move]
 	(let [relevant-mills (filter #(mill-contains-recent-move? recent-move %) board/mills)
-				; _ (println game-state)
-				; _ (println recent-move)
-				; _ (println relevant-mills)
 				just-completed-mills (map #(check-for-completed-mill % game-state) relevant-mills)
-				; _ (println just-completed-mills)
 				]
 		(> (count (filter true? just-completed-mills)) 0)))
 
