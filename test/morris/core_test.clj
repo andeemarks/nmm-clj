@@ -18,14 +18,14 @@
       (:event (update-game after-move-3 piece :b2)) => nil))
   )
 
-(future-facts "moving pieces"
+(facts "moving pieces"
   (fact "returns a new game state if the location is unoccupied"
     (let [game (init-game)
           updated-game (update-game game (first (:white-pieces game)) :a1)]
-       (board updated-game) =not=> nil
-       (white-pieces updated-game) =not=> nil
-       (black-pieces updated-game) =not=> nil
-       (game-state updated-game) =not=> nil
+       (:board updated-game) =not=> nil
+       (:white-pieces updated-game) =not=> nil
+       (:black-pieces updated-game) =not=> nil
+       (:game-state updated-game) =not=> nil
        ))
   (fact "is illegal if the location does not exist"
     (let [game (init-game)]
