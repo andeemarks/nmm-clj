@@ -1,6 +1,7 @@
 (ns morris.board
 	(:require 
 		[loom.graph :refer :all]
+		[morris.piece :as piece]
 		[loom.attr :refer :all]
 		[loom.io :refer :all]
 		))
@@ -21,11 +22,22 @@
 		; connectors
 		(connect-from-to :b4 :c4) (connect-from-to :f4 :e4) (connect-from-to :d2 :d3) (connect-from-to :d6 :d5) (connect-from-to :d1 :d2) (connect-from-to :a4 :b4) (connect-from-to :d7 :d6) (connect-from-to :g4 :f4)))
 
-(defn layout [board]
+(defn show-pieces [board game-state]
+  (loop [board-with-pieces board pieces-on-board (keys game-state)]
+   	(if (nil? (first pieces-on-board))
+      board-with-pieces
+      (let [piece-to-show ((first pieces-on-board) game-state)]
+	      (recur 
+	      	(add-attr-to-nodes board-with-pieces :color (piece/extract-colour piece-to-show) [(first pieces-on-board)])
+	    		(rest pieces-on-board))))))
+
+(defn layout [board game-state]
 	(let [all-nodes (nodes board)]
-		(-> (add-attr-to-nodes board :width "0.25" all-nodes)
-				(add-attr-to-nodes :shape "point" all-nodes)
-				(add-attr-to-nodes :style "filled" all-nodes)
+		(-> board
+				(add-attr-to-all :width "0.25")
+				(add-attr-to-all :shape "point")
+				(add-attr-to-all :style "filled")
+				(add-attr-to-all :color "gray")
 				(add-attr-to-nodes :pos "2,2!" [:c3])
 				(add-attr-to-nodes :pos "3,2!" [:d3])
 				(add-attr-to-nodes :pos "4,2!" [:e3])
@@ -48,8 +60,11 @@
 				(add-attr-to-nodes :pos "0, -2!" [:a7])
 				(add-attr-to-nodes :pos "3, -2!" [:d7])
 				(add-attr-to-nodes :pos "6, -2!" [:g7])
-				(dot-str)
+				(show-pieces game-state)
 				)))
+
+(defn show [board game-state]
+	(dot-str (layout board game-state)))
 
 (defn make-mill [loc1 loc2 loc3]
 	(subgraph (board) [(make-location loc1) (make-location loc2) (make-location loc3)]))
