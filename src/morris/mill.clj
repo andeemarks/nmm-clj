@@ -24,14 +24,17 @@
 			(not (board/location-available? third-node game-state)))))
 
 (defn check-for-completed-mill [mill game-state]
-	(and
-		(occupied-by-same-colour-pieces? mill game-state)
-		(locations-all-occupied? mill game-state)))
+	(if
+		(and
+			(occupied-by-same-colour-pieces? mill game-state)
+			(locations-all-occupied? mill game-state))
+		(graph/nodes mill)
+		nil))
 
 (defn mill-contains-recent-move? [recent-move mill]
 	(graph/has-node? mill recent-move))
 
-(defn check-for-completed-mills [game-state recent-move]
+(defn find-completed-mills [game-state recent-move]
 	(let [relevant-mills (filter #(mill-contains-recent-move? recent-move %) board/mills)
 				just-completed-mills (map #(check-for-completed-mill % game-state) relevant-mills) ]
-		(> (count (filter true? just-completed-mills)) 0)))
+		(remove nil? just-completed-mills)))

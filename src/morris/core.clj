@@ -20,7 +20,7 @@
 			(if (board/location-available? destination current-game-state)
 				(let [new-game-state (merge current-game-state {destination piece})
 							new-game (assoc game :game-state new-game-state)
-							mill-completed? (mill/check-for-completed-mills new-game-state destination)]
+							mill-completed? (mill/find-completed-mills new-game-state destination)]
 					(if mill-completed?
 						(assoc new-game :completed-mill-event "mill completed")
 						(assoc new-game :completed-mill-event nil)))
