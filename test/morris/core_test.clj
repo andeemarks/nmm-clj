@@ -3,19 +3,19 @@
             [morris.core :refer :all]))
 
 (facts "completing mills"
-  (fact "will generate an event"
+  (fact "will generate an event comtaining the completed mill"
     (let [game (init-game)
           after-move-1 (update-game game (first (:white-pieces game)) :a1)
           after-move-2 (update-game after-move-1 (second (:white-pieces after-move-1)) :a4)
           piece (nth (:white-pieces after-move-2) 3)]      
-      (:event (update-game after-move-2 piece :a7)) => "mill completed"))
+      (:completed-mill-event (update-game after-move-2 piece :a7)) => "mill completed"))
   (fact "will only generate an event the first time the mill is completed"
     (let [game (init-game)
           after-move-1 (update-game game (first (:white-pieces game)) :a1)
           after-move-2 (update-game after-move-1 (second (:white-pieces after-move-1)) :a4)
           after-move-3 (update-game after-move-2 (nth (:white-pieces after-move-2) 3) :a7)
           piece (nth (:white-pieces after-move-2) 4)]      
-      (:event (update-game after-move-3 piece :b2)) => nil))
+      (:completed-mill-event (update-game after-move-3 piece :b2)) => nil))
   )
 
 (facts "moving pieces"

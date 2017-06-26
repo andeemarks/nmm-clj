@@ -103,3 +103,7 @@
 
 (defn location-exists? [location]
 	(has-node? (board) location))
+
+(defn location-available? [location game-state]
+	(nil? (location game-state)))
+
