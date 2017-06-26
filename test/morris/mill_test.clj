@@ -10,4 +10,9 @@
       (check-for-completed-mills {} :a7) => false
       (check-for-completed-mills {:a1 :white-1} :a7) => false
       (check-for-completed-mills {:a1 :white-1 :a4 :white-2 } :a7) => false
-      (check-for-completed-mills {:a1 :white-1 :a4 :white-2 :a7 :white-3} :a7) => true)))
+      (check-for-completed-mills {:a1 :white-1 :a4 :white-2 :a7 :black-3} :a7) => false
+      (check-for-completed-mills {:a1 :white-1 :a4 :white-2 :a7 :white-3} :b2) => false
+      (check-for-completed-mills {:a1 :white-1 :a4 :white-2 :a7 :white-3} :a7) => true))
+  (fact "will ignore already completed mills"
+    (let [game (core/init-game)]
+      (check-for-completed-mills {:a1 :white-1 :a4 :white-2 :a7 :white-3} :b2) => false)))

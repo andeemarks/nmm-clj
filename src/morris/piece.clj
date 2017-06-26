@@ -1,4 +1,5 @@
-(ns morris.piece)
+(ns morris.piece
+	(:require [clojure.string :as str]))
 
 (defn- make-white-piece [id] (symbol (str "white-" id)))
 (defn- make-black-piece [id] (symbol (str "black-" id)))
@@ -10,4 +11,7 @@
 	(map #(make-black-piece %) (range 1 9)))
 
 (defn extract-colour [id]
-	(subs (name id) 0 5))
+	(first (str/split (name id) #"-")))
+
+(defn from-same-player? [pieces]
+	(= 1 (count (set (map #(extract-colour %) (filter some? pieces))))))
