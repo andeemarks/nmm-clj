@@ -13,7 +13,6 @@
 		:game-state nil})
 
 (defn location-available? [location game-state]
-	; (println (str "Checking for availability of " location " in " game-state))
 	(nil? (location game-state)))
 
 (defn check-for-completed-mill [mill game-state]
