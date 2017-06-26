@@ -20,7 +20,12 @@
 		; middle square
 		(connect-from-to :b2 :d2) (connect-from-to :d2 :f2) (connect-from-to :b2 :b4) (connect-from-to :b4 :b6) (connect-from-to :b6 :d6) (connect-from-to :d6 :f6) (connect-from-to :f6 :f4) (connect-from-to :f4 :f2)
 		; connectors
-		(connect-from-to :b4 :c4) (connect-from-to :f4 :e4) (connect-from-to :d2 :d3) (connect-from-to :d6 :d5) (connect-from-to :d1 :d2) (connect-from-to :a4 :b4) (connect-from-to :d7 :d6) (connect-from-to :g4 :f4)))
+		(connect-from-to :b4 :c4) (connect-from-to :f4 :e4) (connect-from-to :d2 :d3) (connect-from-to :d6 :d5) (connect-from-to :d1 :d2) (connect-from-to :a4 :b4) (connect-from-to :d7 :d6) (connect-from-to :g4 :f4)
+		; white pieces
+		[:w1 :w2] [:w2 :w3] [:w3 :w4] [:w4 :w5] [:w5 :w6] [:w6 :w7] [:w7 :w8] [:w8 :w9]
+		; black pieces
+		[:bl1 :bl2] [:bl2 :bl3] [:bl3 :bl4] [:bl4 :bl5] [:bl5 :bl6] [:bl6 :bl7] [:bl7 :bl8] [:bl8 :bl9]
+		))
 
 (defn add-pieces [board game-state]
   (loop [board-with-pieces board pieces-on-board (keys game-state)]
@@ -67,11 +72,49 @@
 			(add-attr-to-nodes :pos "3, -2!" [:d7])
 			(add-attr-to-nodes :pos "6, -2!" [:g7])))
 
+(defn add-white-pieces [board]
+	(-> board
+			(add-attr-to-nodes :pos "-1,-3!" [:w1])
+			(add-attr-to-nodes :pos "0,-3!" [:w2])
+			(add-attr-to-nodes :pos "1,-3!" [:w3])
+			(add-attr-to-nodes :pos "2,-3!" [:w4])
+			(add-attr-to-nodes :pos "3,-3!" [:w5])
+			(add-attr-to-nodes :pos "4,-3!" [:w6])
+			(add-attr-to-nodes :pos "5,-3!" [:w7])
+			(add-attr-to-nodes :pos "6,-3!" [:w8])
+			(add-attr-to-nodes :pos "7,-3!" [:w9])
+			(add-attr-to-nodes :shape "circle" [:w1 :w2 :w3 :w4 :w5 :w6 :w7 :w8 :w9])
+			(add-attr-to-nodes :color "black" [:w1 :w2 :w3 :w4 :w5 :w6 :w7 :w8 :w9])
+			(add-attr-to-nodes :fillcolor "white" [:w1 :w2 :w3 :w4 :w5 :w6 :w7 :w8 :w9])
+			(add-attr-to-nodes :style "filled" [:w1 :w2 :w3 :w4 :w5 :w6 :w7 :w8 :w9])
+			(add-attr-to-nodes :width "0.1" [:w1 :w2 :w3 :w4 :w5 :w6 :w7 :w8 :w9])
+	))
+
+(defn add-black-pieces [board]
+	(-> board
+			(add-attr-to-nodes :pos "-1,-4!" [:bl1])
+			(add-attr-to-nodes :pos "0,-4!" [:bl2])
+			(add-attr-to-nodes :pos "1,-4!" [:bl3])
+			(add-attr-to-nodes :pos "2,-4!" [:bl4])
+			(add-attr-to-nodes :pos "3,-4!" [:bl5])
+			(add-attr-to-nodes :pos "4,-4!" [:bl6])
+			(add-attr-to-nodes :pos "5,-4!" [:bl7])
+			(add-attr-to-nodes :pos "6,-4!" [:bl8])
+			(add-attr-to-nodes :pos "7,-4!" [:bl9])
+			(add-attr-to-nodes :shape "circle" [:bl1 :bl2 :bl3 :bl4 :bl5 :bl6 :bl7 :bl8 :bl9])
+			(add-attr-to-nodes :color "black" [:bl1 :bl2 :bl3 :bl4 :bl5 :bl6 :bl7 :bl8 :bl9])
+			(add-attr-to-nodes :fillcolor "black" [:bl1 :bl2 :bl3 :bl4 :bl5 :bl6 :bl7 :bl8 :bl9])
+			(add-attr-to-nodes :style "filled" [:bl1 :bl2 :bl3 :bl4 :bl5 :bl6 :bl7 :bl8 :bl9])
+			(add-attr-to-nodes :width "0.1" [:bl1 :bl2 :bl3 :bl4 :bl5 :bl6 :bl7 :bl8 :bl9])
+	))
+
 (defn layout [board game-state]
 	(let [all-nodes (nodes board)]
 		(-> board
 				(add-common-layout)
 				(add-position-hints)
+				(add-white-pieces)
+				(add-black-pieces)
 				(add-pieces game-state))))
 
 (defn show [board game-state]
