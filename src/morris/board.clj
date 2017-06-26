@@ -101,5 +101,5 @@
 	(make-mill :g1 :g4 :g7)
 	])
 
-	(defn location-exists? [location]
-		(has-node? (board) location))
+(defn location-exists? [location]
+	(has-node? (board) location))
