@@ -13,5 +13,3 @@
       (:fillcolor white-piece) => "white")
     (let [black-piece (attrs (layout (board) {:d3 :black-3}) :d3)]
       (:fillcolor black-piece) => "black")))
-
-(spit "board.dot" (show (board) {:a1 :black-1 :d6 :white-1 :f2 :black-2 :b4 :black-2 :f4 :black-3 :c5 :white-3}))
