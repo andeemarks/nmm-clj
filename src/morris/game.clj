@@ -29,9 +29,12 @@
 
 (defn -main [& args]
 	(println "Welcome to Nine Men's Morris!")
-	(loop [game (core/init-game) player "white"]
-		(let [game-in-progress (process-player-move game player)]
-			(board/show (:board game-in-progress) (:game-state game-in-progress))
+	(loop [game (core/init-game) player "white" round 1]
+		(let [game-in-progress (process-player-move game player)
+					board (board/show (:board game-in-progress) (:game-state game-in-progress))]
+			(spit (str "board-" round ".dot") board)
+			(spit (str "board-latest.dot")    board)
 	    (recur 
 	    	game-in-progress
-	    	(next-player player)))))
+	    	(next-player player)
+	    	(inc round)))))

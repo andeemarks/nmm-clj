@@ -38,7 +38,7 @@
 	(let [all-nodes (nodes board)]
 		(-> board
 				(add-attr-to-nodes :width 0.25 all-nodes)
-				(add-attr-to-nodes :shape "point" all-nodes)
+				(add-attr-to-nodes :shape "circle" all-nodes)
 				(add-attr-to-nodes :style "filled" all-nodes)
 				(add-attr-to-nodes :color "gray" all-nodes))))
 
