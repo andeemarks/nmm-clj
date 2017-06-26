@@ -2,7 +2,7 @@
 	(:require 
 		[morris.board :as board]
 		[morris.core :as core]
-		))
+		[clojure.java.shell :as shell]))
 
 (defn get-input [prompt]
   (println prompt)
@@ -34,6 +34,7 @@
 					board (board/show (:board game-in-progress) (:game-state game-in-progress))]
 			(spit (str "board-" round ".dot") board)
 			(spit (str "board-latest.dot")    board)
+			(shell/sh "bash" "-c" "fdp board-latest.dot -Tsvg | display")
 	    (recur 
 	    	game-in-progress
 	    	(next-player player)
