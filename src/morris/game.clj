@@ -32,9 +32,9 @@
 	(loop [game (core/init-game) player "white" round 1]
 		(let [game-in-progress (process-player-move game player)
 					board (board/show (:board game-in-progress) (:game-state game-in-progress))]
-			(spit (str "board-" round ".dot") board)
-			(spit (str "board-latest.dot")    board)
-			(shell/sh "bash" "-c" "fdp board-latest.dot -Tsvg | display")
+			(spit (str "target/board-" round ".dot") board)
+			(spit (str "target/board-latest.dot")    board)
+			(shell/sh "bash" "-c" "fdp target/board-latest.dot -Tsvg | display")
 	    (recur 
 	    	game-in-progress
 	    	(next-player player)
