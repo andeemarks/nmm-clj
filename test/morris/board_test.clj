@@ -6,9 +6,12 @@
 
 (facts "board layout"
   (fact "can show an empty board"
-    (layout (board) nil) => anything)
+    (let [empty-position (attrs (layout (board) nil) :a1)]
+      (:color empty-position) => "gray"))
   (fact "reflects game state on non-empty boards"
-    (:color (attrs (layout (board) {:a1 :white-1}) :a1)) => "white"
-    (:color (attrs (layout (board) {:d3 :black-3}) :d3)) => "black"))
+    (let [white-piece (attrs (layout (board) {:a1 :white-1}) :a1)]
+      (:fillcolor white-piece) => "white")
+    (let [black-piece (attrs (layout (board) {:d3 :black-3}) :d3)]
+      (:fillcolor black-piece) => "black")))
 
-(println (show (board) {:a1 :white-1}))
+(spit "board.dot" (show (board) {:a1 :black-1 :d6 :white-1 :f2 :black-2 :b4 :black-2 :f4 :black-3 :c5 :white-3}))
