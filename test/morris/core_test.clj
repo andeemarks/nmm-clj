@@ -27,6 +27,13 @@
        (:black-pieces updated-game) =not=> nil
        (:game-state updated-game) =not=> nil
        ))
+  (fact "reduces the number of pieces of the corresponding player"
+    (let [game (init-game)
+          initial-white-piece-count (count (:white-pieces game))
+          initial-black-piece-count (count (:black-pieces game))
+          updated-game (update-game game (first (:white-pieces game)) :a1)]
+       (+ 1 (count (:white-pieces updated-game))) => initial-white-piece-count
+       (count (:black-pieces updated-game)) => initial-black-piece-count ))
   (fact "is illegal if the location does not exist"
     (let [game (init-game)]
       (update-game game (first (:white-pieces game)) :a11) => (throws IllegalArgumentException)))
