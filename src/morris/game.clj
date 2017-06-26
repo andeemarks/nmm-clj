@@ -27,15 +27,15 @@
       	current-player
       	(keyword (get-input (str "[" current-player "] That is not a valid position - what is your move?")))))))
 
+(defn- show-board [board]
+	(spit (str "target/board-" round ".dot") board)
+	(spit (str "target/board-latest.dot")    board)
+	(shell/sh "bash" "-c" "fdp target/board-latest.dot -Tsvg | display"))
+
 (defn -main [& args]
 	(println "Welcome to Nine Men's Morris!")
 	(loop [game (core/init-game) player "white" round 1]
 		(let [game-in-progress (process-player-move game player)
 					board (board/show (:board game-in-progress) (:game-state game-in-progress))]
-			(spit (str "target/board-" round ".dot") board)
-			(spit (str "target/board-latest.dot")    board)
-			(shell/sh "bash" "-c" "fdp target/board-latest.dot -Tsvg | display")
-	    (recur 
-	    	game-in-progress
-	    	(next-player player)
-	    	(inc round)))))
+			(show-board board)
+	    (recur game-in-progress (next-player player) (inc round)))))
