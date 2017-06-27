@@ -113,7 +113,9 @@
 
 (defn hilite-completed-mill [board mill]
 	(println mill)
-	(hilite-path board (bf-path board (first mill) (last mill))))
+	(-> board
+		(hilite-path (bf-path board (first mill) (last mill)))
+		(hilite-path (bf-path board (first mill) (second mill)))))
 
 (defn add-completed-mills [board completed-mill-event]
 	(if completed-mill-event
