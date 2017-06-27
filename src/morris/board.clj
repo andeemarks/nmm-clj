@@ -31,12 +31,14 @@
   (loop [board-with-pieces board pieces-on-board (keys game-state)]
    	(if (nil? (first pieces-on-board))
       board-with-pieces
-      (let [piece-to-show ((first pieces-on-board) game-state)]
+      (let [piece-id (first pieces-on-board)
+      			piece-to-show (piece-id game-state)
+      			piece-colour (piece/extract-colour piece-to-show)]
 	      (recur 
 	      	(-> board-with-pieces
-	      		(add-attr-to-nodes :fillcolor (piece/extract-colour piece-to-show) [(first pieces-on-board)])
-	      		(add-attr-to-nodes :labelfontcolor (piece/extract-colour piece-to-show) [(first pieces-on-board)])
-	      		(add-attr-to-nodes :shape "circle" [(first pieces-on-board)]))
+	      		(add-attr-to-nodes :fillcolor piece-colour [piece-id])
+	      		(add-attr-to-nodes :labelfontcolor piece-colour [piece-id])
+	      		(add-attr-to-nodes :shape "circle" [piece-id]))
 	    		(rest pieces-on-board))))))
 
 (defn- add-common-layout [board]
@@ -72,7 +74,7 @@
 			(add-attr-to-nodes :pos "3, -2!" [:d7])
 			(add-attr-to-nodes :pos "6, -2!" [:g7])))
 
-(defn add-white-pieces [board]
+(defn add-white-pieces [board white-pieces]
 	(-> board
 			(add-attr-to-nodes :pos "-1,-3!" [:w1])
 			(add-attr-to-nodes :pos "0,-3!" [:w2])
@@ -87,10 +89,10 @@
 			(add-attr-to-nodes :color "black" [:w1 :w2 :w3 :w4 :w5 :w6 :w7 :w8 :w9])
 			(add-attr-to-nodes :fillcolor "white" [:w1 :w2 :w3 :w4 :w5 :w6 :w7 :w8 :w9])
 			(add-attr-to-nodes :style "filled" [:w1 :w2 :w3 :w4 :w5 :w6 :w7 :w8 :w9])
-			(add-attr-to-nodes :width "0.1" [:w1 :w2 :w3 :w4 :w5 :w6 :w7 :w8 :w9])
+			(add-attr-to-nodes :width "0.05" [:w1 :w2 :w3 :w4 :w5 :w6 :w7 :w8 :w9])
 	))
 
-(defn add-black-pieces [board]
+(defn add-black-pieces [board black-pieces]
 	(-> board
 			(add-attr-to-nodes :pos "-1,-4!" [:bl1])
 			(add-attr-to-nodes :pos "0,-4!" [:bl2])
@@ -105,20 +107,19 @@
 			(add-attr-to-nodes :color "black" [:bl1 :bl2 :bl3 :bl4 :bl5 :bl6 :bl7 :bl8 :bl9])
 			(add-attr-to-nodes :fillcolor "black" [:bl1 :bl2 :bl3 :bl4 :bl5 :bl6 :bl7 :bl8 :bl9])
 			(add-attr-to-nodes :style "filled" [:bl1 :bl2 :bl3 :bl4 :bl5 :bl6 :bl7 :bl8 :bl9])
-			(add-attr-to-nodes :width "0.1" [:bl1 :bl2 :bl3 :bl4 :bl5 :bl6 :bl7 :bl8 :bl9])
+			(add-attr-to-nodes :size "0.05" [:bl1 :bl2 :bl3 :bl4 :bl5 :bl6 :bl7 :bl8 :bl9])
 	))
 
-(defn layout [board game-state]
-	(let [all-nodes (nodes board)]
-		(-> board
-				(add-common-layout)
-				(add-position-hints)
-				(add-white-pieces)
-				(add-black-pieces)
-				(add-pieces game-state))))
+(defn layout [game]
+	(-> (:board game)
+			(add-common-layout)
+			(add-position-hints)
+			(add-white-pieces (:white-pieces game))
+			(add-black-pieces (:black-pieces game))
+			(add-pieces (:game-state game))))
 
-(defn show [board game-state]
-	(dot-str (layout board game-state)))
+(defn show [game]
+	(dot-str (layout game)))
 
 (defn make-mill [loc1 loc2 loc3]
 	(subgraph (board) [(make-location loc1) (make-location loc2) (make-location loc3)]))
