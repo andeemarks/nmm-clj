@@ -25,7 +25,8 @@
 		(if (board/location-exists? destination)				
 			(if (board/location-available? destination current-game-state)
 				(let [new-game-state (merge current-game-state {destination piece})
-							new-game (assoc (remove-piece-from-backlog piece) :game-state new-game-state)
+							game-with-updated-player-pools (remove-piece-from-backlog piece)
+							new-game (assoc game-with-updated-player-pools :game-state new-game-state)
 							mill-completed? (mill/find-completed-mills new-game-state destination)]
 					(if mill-completed?
 						(assoc new-game :completed-mill-event "mill completed")
