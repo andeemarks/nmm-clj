@@ -30,7 +30,7 @@
 							new-game (assoc game-with-updated-player-pools :game-state new-game-state)
 							mill-completed? (mill/find-completed-mills new-game-state destination)]
 					(if mill-completed?
-						(assoc new-game :completed-mill-event "mill completed")
+						(assoc new-game :completed-mill-event (first mill-completed?))
 						(assoc new-game :completed-mill-event nil)))
 				(throw (IllegalStateException. (str "Location " destination " is already occupied"))))
 			(throw (IllegalArgumentException. (str "Location " destination " does not exist on board"))))))

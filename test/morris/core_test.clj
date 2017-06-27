@@ -8,7 +8,7 @@
           after-move-1 (update-game game (first (:white-pieces game)) :a1)
           after-move-2 (update-game after-move-1 (second (:white-pieces after-move-1)) :a4)
           piece (nth (:white-pieces after-move-2) 3)]      
-      (:completed-mill-event (update-game after-move-2 piece :a7)) => "mill completed"))
+      (:completed-mill-event (update-game after-move-2 piece :a7)) => #{:a1 :a4 :a7}))
   (fact "will only generate an event the first time the mill is completed"
     (let [game (init-game)
           after-move-1 (update-game game (first (:white-pieces game)) :a1)

@@ -110,10 +110,19 @@
 			(add-attr-to-nodes :size "0.05" black-pieces)
 	))
 
+(defn add-completed-mills [board completed-mill-event]
+	(if completed-mill-event
+		(let []
+			(-> board
+				(add-attr :a1 :d1 :color "#ff0000:#000000:#ff0000")
+				(add-attr :a1 :d1 :label "completed!")))
+		board))
+
 (defn layout [game]
 	(-> (:board game)
 			(add-common-layout)
 			(add-position-hints)
+			(add-completed-mills (:completed-mill-event game))
 			; (add-white-pieces (:white-pieces game))
 			; (add-black-pieces (:black-pieces game))
 			(add-pieces (:game-state game))))
