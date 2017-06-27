@@ -24,6 +24,10 @@
 		(connect-from-to :b4 :c4) (connect-from-to :f4 :e4) (connect-from-to :d2 :d3) (connect-from-to :d6 :d5) (connect-from-to :d1 :d2) (connect-from-to :a4 :b4) (connect-from-to :d7 :d6) (connect-from-to :g4 :f4)
 		))
 
+; (add-attr node :color :red)
+;          (add-attr node :fontcolor :red)
+;          (add-attr node :fillcolor "#ffeeee")
+;          (add-attr node :style "filled,bold")))
 (defn add-pieces [board game-state]
   (loop [board-with-pieces board pieces-on-board (keys game-state)]
    	(if (nil? (first pieces-on-board))
@@ -33,9 +37,9 @@
       			piece-colour (piece/extract-colour piece-to-show)]
 	      (recur 
 	      	(-> board-with-pieces
-	      		(add-attr-to-nodes :fillcolor piece-colour [piece-id])
-	      		(add-attr-to-nodes :labelfontcolor piece-colour [piece-id])
-	      		(add-attr-to-nodes :shape "circle" [piece-id]))
+	      		(add-attr piece-id :fillcolor piece-colour )
+	      		(add-attr piece-id :fontcolor "#ff0000" )
+	      		(add-attr piece-id :shape "circle" ))
 	    		(rest pieces-on-board))))))
 
 (defn- add-common-layout [board]
