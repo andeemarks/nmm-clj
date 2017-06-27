@@ -3,6 +3,7 @@
 		[loom.graph :refer :all]
 		[morris.piece :as piece]
 		[loom.attr :refer :all]
+		[loom.alg :refer :all]
 		[loom.io :refer :all]
 		))
 
@@ -110,12 +111,14 @@
 			(add-attr-to-nodes :size "0.05" black-pieces)
 	))
 
+(defn hilite-completed-mill [board mill]
+	(println mill)
+	(hilite-path board (bf-path board (first mill) (last mill))))
+
 (defn add-completed-mills [board completed-mill-event]
 	(if completed-mill-event
 		(let []
-			(-> board
-				(add-attr :a1 :d1 :color "#ff0000:#000000:#ff0000")
-				(add-attr :a1 :d1 :label "completed!")))
+			(hilite-completed-mill board completed-mill-event))
 		board))
 
 (defn layout [game]
