@@ -21,10 +21,6 @@
 		(connect-from-to :b2 :d2) (connect-from-to :d2 :f2) (connect-from-to :b2 :b4) (connect-from-to :b4 :b6) (connect-from-to :b6 :d6) (connect-from-to :d6 :f6) (connect-from-to :f6 :f4) (connect-from-to :f4 :f2)
 		; connectors
 		(connect-from-to :b4 :c4) (connect-from-to :f4 :e4) (connect-from-to :d2 :d3) (connect-from-to :d6 :d5) (connect-from-to :d1 :d2) (connect-from-to :a4 :b4) (connect-from-to :d7 :d6) (connect-from-to :g4 :f4)
-		; white pieces
-		[:w1 :w2] [:w2 :w3] [:w3 :w4] [:w4 :w5] [:w5 :w6] [:w6 :w7] [:w7 :w8] [:w8 :w9]
-		; black pieces
-		[:bl1 :bl2] [:bl2 :bl3] [:bl3 :bl4] [:bl4 :bl5] [:bl5 :bl6] [:bl6 :bl7] [:bl7 :bl8] [:bl8 :bl9]
 		))
 
 (defn add-pieces [board game-state]
@@ -76,6 +72,7 @@
 
 (defn add-white-pieces [board white-pieces]
 	(-> board
+			(add-nodes :w1 :w2 :w3 :w4 :w5 :w6 :w7 :w8 :w9)
 			(add-attr-to-nodes :pos "-1,-3!" [:w1])
 			(add-attr-to-nodes :pos "0,-3!" [:w2])
 			(add-attr-to-nodes :pos "1,-3!" [:w3])
@@ -94,6 +91,7 @@
 
 (defn add-black-pieces [board black-pieces]
 	(-> board
+			(add-nodes :bl1 :bl2 :bl3 :bl4 :bl5 :bl6 :bl7 :bl8 :bl9)
 			(add-attr-to-nodes :pos "-1,-4!" [:bl1])
 			(add-attr-to-nodes :pos "0,-4!" [:bl2])
 			(add-attr-to-nodes :pos "1,-4!" [:bl3])
