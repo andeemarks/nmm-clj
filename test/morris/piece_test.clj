@@ -2,6 +2,9 @@
   (:require [midje.sweet :refer :all]
             [morris.piece :refer :all]))
 
+(facts "piece-generation"
+	(fact "produces 9 pieces of the specified colour"
+		(count (make-black-pieces)) => 9))
 (facts "from-same-player"
 	(facts "checks whether a set of piece ids have the same colour"
 		(from-same-player? [:white-1]) => truthy

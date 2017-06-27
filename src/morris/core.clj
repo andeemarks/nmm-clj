@@ -13,7 +13,7 @@
 		:black-pieces (piece/make-black-pieces)
 		:game-state nil})
 
-(defn remove-piece-from-backlog [piece-on-board]
+(defn remove-piece-from-pool [piece-on-board]
 	{:board (board/board)
 		:white-pieces (remove #(= piece-on-board %) (piece/make-white-pieces))
 		:black-pieces (remove #(= piece-on-board %) (piece/make-black-pieces))
@@ -25,7 +25,7 @@
 		(if (board/location-exists? destination)				
 			(if (board/location-available? destination current-game-state)
 				(let [new-game-state (merge current-game-state {destination piece})
-							game-with-updated-player-pools (remove-piece-from-backlog piece)
+							game-with-updated-player-pools (remove-piece-from-pool piece)
 							new-game (assoc game-with-updated-player-pools :game-state new-game-state)
 							mill-completed? (mill/find-completed-mills new-game-state destination)]
 					(if mill-completed?

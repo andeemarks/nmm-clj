@@ -18,7 +18,7 @@
       (:completed-mill-event (update-game after-move-3 piece :b2)) => nil))
   )
 
-(facts "moving pieces"
+(facts "placing pieces"
   (fact "returns a new game state if the location is unoccupied"
     (let [game (init-game)
           updated-game (update-game game (first (:white-pieces game)) :a1)]

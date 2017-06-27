@@ -13,20 +13,23 @@
 		(board/location-available? move game-state)
 		(board/location-exists? move)))
 
-(defn- next-player [current-player]
-	(if (= "white" current-player)
-		"black"
-		"white"))
+(defn choose-piece [game]
+	(if 
+		(>= 
+			(count (:white-pieces game)) 
+			(count (:black-pieces game)))
+		(first (:white-pieces game))
+		(first (:black-pieces game))))
 
-(defn- process-player-move [game player]
-  (loop [current-player player
-  			move (keyword (get-input (str "[" current-player "] What is your move?")))]
+(defn- process-player-piece-placement [game piece]
+  (loop [current-piece piece
+  			move (keyword (get-input (str "[" current-piece "] What is your move?")))]
     (if (valid-move? move (:game-state game))
-    	(let [new-game-state (core/update-game game (str current-player "-1") move)]
+    	(let [new-game-state (core/update-game game current-piece move)]
     		new-game-state)
       (recur 
-      	current-player
-      	(keyword (get-input (str "[" current-player "] That is not a valid position - what is your move?")))))))
+      	current-piece
+      	(keyword (get-input (str "[" current-piece "] That is not a valid position - what is your move?")))))))
 
 (defn- show [board-state round]
 	(spit (str "target/board-" round ".dot") board-state)
@@ -35,7 +38,7 @@
 
 (defn -main [& args]
 	(println "Welcome to Nine Men's Morris!")
-	(loop [game (core/init-game) player "white" round 1]
+	(loop [game (core/init-game) piece (choose-piece game) round 1]
 		(show (board/show game) round)
-		(let [game-in-progress (process-player-move game player)]
-	    (recur game-in-progress (next-player player) (inc round)))))
+		(let [game-in-progress (process-player-piece-placement game piece)]
+	    (recur game-in-progress (choose-piece game-in-progress) (inc round)))))

@@ -1,14 +1,14 @@
 (ns morris.piece
 	(:require [clojure.string :as str]))
 
-(defn- make-white-piece [id] (symbol (str "white-" id)))
-(defn- make-black-piece [id] (symbol (str "black-" id)))
+(defn- make-white-piece [id] (keyword (str "white-" id)))
+(defn- make-black-piece [id] (keyword (str "black-" id)))
 
 (defn make-white-pieces []
-	(map #(make-white-piece %) (range 1 9)))
+	(map #(make-white-piece %) (range 1 10)))
 
 (defn make-black-pieces []
-	(map #(make-black-piece %) (range 1 9)))
+	(map #(make-black-piece %) (range 1 10)))
 
 (defn extract-colour [id]
 	(first (str/split (name id) #"-")))
