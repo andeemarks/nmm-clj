@@ -6,10 +6,12 @@
   (fact "changes only the game state if the location is occupied by another player"
     (let [game (init-game)
           after-move-1 (update-game game (first (:white-pieces game)) :a1)
-          updated-game (remove-piece after-move-1 :a1)]
-        (:board updated-game) => (:board after-move-1) 
-        (:white-pieces updated-game) => (:white-pieces after-move-1) 
-        (:black-pieces updated-game) => (:black-pieces after-move-1) 
+          stub-completed-mill (assoc after-move-1 :completed-mill-event "foo")
+          updated-game (remove-piece stub-completed-mill :a1)]
+        (:board updated-game) => (:board stub-completed-mill) 
+        (:white-pieces updated-game) => (:white-pieces stub-completed-mill) 
+        (:black-pieces updated-game) => (:black-pieces stub-completed-mill) 
+        (:completed-mill-event updated-game) => nil
         (:game-state updated-game) => {} )) )
   (fact "is illegal if the location is not occupied"
     (let [game (init-game)]

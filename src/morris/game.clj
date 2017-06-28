@@ -45,7 +45,7 @@
 	(println "Handling removal...")
   (loop [location-to-remove (keyword (get-input (str "[" piece "] Mill completed! Which piece do you want to remove?")))]
     (if (valid-removal? location-to-remove (:game-state game))
-    	(let [new-game-state (core/remove-piece game piece)]
+    	(let [new-game-state (core/remove-piece game location-to-remove)]
     		new-game-state)
       (recur 
       	(keyword (get-input (str "[" piece "] That is not a valid position - which piece to remove?")))))))
@@ -55,6 +55,6 @@
 	(loop [game (core/init-game) piece (choose-piece game) round 1 mode :piece-placement]
 		(show (board/show game) round)
 		(let [game-in-progress (process-round mode game piece)]
-			(if (:mill-completed-event game-in-progress)
+			(if (:completed-mill-event game-in-progress)
 		    (recur game-in-progress piece round :piece-removal)
 	    	(recur game-in-progress (choose-piece game-in-progress) (inc round) :piece-placement)))))

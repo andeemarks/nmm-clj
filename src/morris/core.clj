@@ -35,4 +35,6 @@
 (defn remove-piece [game location-containing-piece]
 	(if (board/location-available? location-containing-piece (:game-state game))
 		(throw (IllegalArgumentException. (str "Location " location-containing-piece " is not occupied")))
-		(update-in game [:game-state] dissoc location-containing-piece)))
+		(-> game
+			(update-in [:game-state] dissoc location-containing-piece)
+			(dissoc :completed-mill-event))))
