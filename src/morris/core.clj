@@ -34,3 +34,8 @@
 						(assoc new-game :completed-mill-event nil)))
 				(throw (IllegalStateException. (str "Location " destination " is already occupied"))))
 			(throw (IllegalArgumentException. (str "Location " destination " does not exist on board"))))))
+
+(defn remove-piece [game location-containing-piece]
+		(if (board/location-available? location-containing-piece (:game-state game))
+			(throw (IllegalArgumentException. (str "Location " location-containing-piece " is not occupied")))
+			game) )

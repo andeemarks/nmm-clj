@@ -5,12 +5,13 @@
 (facts "removing pieces"
   (fact "returns a new game state if the location is occupied by another player"
     (let [game (init-game)
-          updated-game (update-game game (first (:white-pieces game)) :a1)]
-       (:board updated-game) =not=> nil
-       (:white-pieces updated-game) =not=> nil
-       (:black-pieces updated-game) =not=> nil
-       (:game-state updated-game) =not=> nil
-       )) )
+          after-move-1 (update-game game (first (:white-pieces game)) :a1)
+          updated-game (remove-piece after-move-1 :a1)]
+       (:game-state updated-game) =not=> nil )) )
+  (fact "is illegal if the location is not occupied"
+    (let [game (init-game)]
+      (remove-piece game :a1) => (throws IllegalArgumentException)))
+
 (facts "completing mills"
   (fact "will generate an event comtaining the completed mill"
     (let [game (init-game)
