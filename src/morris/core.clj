@@ -36,6 +36,7 @@
 			(throw (IllegalArgumentException. (str "Location " destination " does not exist on board"))))))
 
 (defn remove-piece [game location-containing-piece]
-		(if (board/location-available? location-containing-piece (:game-state game))
-			(throw (IllegalArgumentException. (str "Location " location-containing-piece " is not occupied")))
-			game) )
+	(if (board/location-available? location-containing-piece (:game-state game))
+		(throw (IllegalArgumentException. (str "Location " location-containing-piece " is not occupied")))
+		(let [new-game-state (dissoc (:game-state game) location-containing-piece)]
+			(assoc game :game-state new-game-state))))

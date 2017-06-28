@@ -3,11 +3,14 @@
             [morris.core :refer :all]))
 
 (facts "removing pieces"
-  (fact "returns a new game state if the location is occupied by another player"
+  (fact "changes only the game state if the location is occupied by another player"
     (let [game (init-game)
           after-move-1 (update-game game (first (:white-pieces game)) :a1)
           updated-game (remove-piece after-move-1 :a1)]
-       (:game-state updated-game) =not=> nil )) )
+        (:board updated-game) => (:board after-move-1) 
+        (:white-pieces updated-game) => (:white-pieces after-move-1) 
+        (:black-pieces updated-game) => (:black-pieces after-move-1) 
+        (:game-state updated-game) => {} )) )
   (fact "is illegal if the location is not occupied"
     (let [game (init-game)]
       (remove-piece game :a1) => (throws IllegalArgumentException)))
