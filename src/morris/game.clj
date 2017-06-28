@@ -8,7 +8,11 @@
   (println prompt)
   (read-line))
 
-(defn- valid-placement? [move game-state]
+(defn- valid-placement? [location-to-remove game-state]
+	(not 
+		(board/location-available? location-to-remove game-state)))
+
+(defn- valid-removal? [move game-state]
 	(and 
 		(board/location-available? move game-state)
 		(board/location-exists? move)))
@@ -35,6 +39,16 @@
       (recur 
       	current-piece
       	(keyword (get-input (str "[" current-piece "] That is not a valid position - what is your move?")))))))
+
+(defn- process-player-piece-removal [game piece]
+  (loop [current-piece piece
+  			location-to-remove (keyword (get-input (str "[" current-piece "] Mill completed! Which piece do you want to remove?")))]
+    (if (valid-removal? location-to-remove (:game-state game))
+    	(let [new-game-state (core/remove-piece game current-piece)]
+    		new-game-state)
+      (recur 
+      	current-piece
+      	(keyword (get-input (str "[" current-piece "] That is not a valid position - which piece to remove?")))))))
 
 (defn -main [& args]
 	(println "Welcome to Nine Men's Morris!")
