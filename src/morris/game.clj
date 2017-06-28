@@ -31,24 +31,20 @@
 	(shell/sh "bash" "-c" "fdp target/board-latest.dot -Tsvg | display"))
 
 (defn- process-player-piece-placement [game piece]
-  (loop [current-piece piece
-  			move (keyword (get-input (str "[" current-piece "] What is your move?")))]
+  (loop [move (keyword (get-input (str "[" piece "] What is your move?")))]
     (if (valid-placement? move (:game-state game))
-    	(let [new-game-state (core/update-game game current-piece move)]
+    	(let [new-game-state (core/update-game game piece move)]
     		new-game-state)
       (recur 
-      	current-piece
-      	(keyword (get-input (str "[" current-piece "] That is not a valid position - what is your move?")))))))
+      	(keyword (get-input (str "[" piece "] That is not a valid position - what is your move?")))))))
 
 (defn- process-player-piece-removal [game piece]
-  (loop [current-piece piece
-  			location-to-remove (keyword (get-input (str "[" current-piece "] Mill completed! Which piece do you want to remove?")))]
+  (loop [location-to-remove (keyword (get-input (str "[" piece "] Mill completed! Which piece do you want to remove?")))]
     (if (valid-removal? location-to-remove (:game-state game))
-    	(let [new-game-state (core/remove-piece game current-piece)]
+    	(let [new-game-state (core/remove-piece game piece)]
     		new-game-state)
       (recur 
-      	current-piece
-      	(keyword (get-input (str "[" current-piece "] That is not a valid position - which piece to remove?")))))))
+      	(keyword (get-input (str "[" piece "] That is not a valid position - which piece to remove?")))))))
 
 (defn -main [& args]
 	(println "Welcome to Nine Men's Morris!")
