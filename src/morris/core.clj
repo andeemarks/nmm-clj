@@ -1,10 +1,8 @@
 (ns morris.core
 	(:require 
-		[loom.graph :refer :all]
 		[morris.board :as board]
 		[morris.mill :as mill]
 		[morris.piece :as piece]
-		[loom.io :refer :all]
 		))
 
 (defn init-game []
@@ -14,7 +12,6 @@
 		:game-state nil})
 
 (defn remove-piece-from-pool [piece-on-board white-pieces black-pieces]
-	; (println piece-on-board white-pieces black-pieces)
 	{:board (board/board)
 		:white-pieces (remove #(= piece-on-board %) white-pieces)
 		:black-pieces (remove #(= piece-on-board %) black-pieces)
