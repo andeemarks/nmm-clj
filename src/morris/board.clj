@@ -112,7 +112,6 @@
 	))
 
 (defn hilite-completed-mill [board mill]
-	(println mill)
 	(-> board
 		(hilite-path (bf-path board (first mill) (last mill)))
 		(hilite-path (bf-path board (first mill) (second mill)))))
