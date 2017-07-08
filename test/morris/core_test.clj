@@ -13,9 +13,32 @@
         (:black-pieces updated-game) => (:black-pieces stub-completed-mill) 
         (:completed-mill-event updated-game) => nil
         (:game-state updated-game) => {} )) )
+  (fact "will end the game if the opposition has less than three available pieces"
+    (let [game (init-game)
+          game-after-placing-piece-to-remove (update-game game (first (:white-pieces game)) :a1)
+          game-after-removing-white-piece-pool (dissoc game-after-placing-piece-to-remove :white-pieces)
+          game-after-piece-removal (remove-piece game-after-removing-white-piece-pool :a1)]
+        (:game-over-event game-after-piece-removal) =not=> nil) )
+  (future-fact "is illegal if the location is part of a completed mill")
   (fact "is illegal if the location is not occupied"
     (let [game (init-game)]
       (remove-piece game :a1) => (throws IllegalArgumentException)))
+
+(facts "checking for end game"
+  (fact "returns true if the combination of played and pool pieces is less than three"
+    (let [initial-game (init-game)
+          game-after-placing-white (update-game initial-game (first (:white-pieces initial-game)) :a1)
+          game-after-placing-black (update-game initial-game (first (:black-pieces initial-game)) :a1)]
+      (check-for-end-game initial-game) => false
+      (check-for-end-game (dissoc initial-game :white-pieces)) => true
+      (check-for-end-game (assoc initial-game :white-pieces (take 3 (:white-pieces initial-game)))) => false
+      (check-for-end-game (assoc initial-game :white-pieces (take 2 (:white-pieces initial-game)))) => true
+      (check-for-end-game (assoc game-after-placing-white :white-pieces (take 2 (:white-pieces initial-game)))) => false
+      (check-for-end-game (dissoc initial-game :black-pieces)) => true
+      (check-for-end-game (assoc initial-game :black-pieces (take 3 (:black-pieces initial-game)))) => false
+      (check-for-end-game (assoc initial-game :black-pieces (take 2 (:black-pieces initial-game)))) => true
+      (check-for-end-game (assoc game-after-placing-black :black-pieces (take 2 (:black-pieces initial-game)))) => false
+    )))
 
 (facts "completing mills"
   (fact "will generate an event comtaining the completed mill"

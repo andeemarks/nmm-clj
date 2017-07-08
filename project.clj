@@ -1,6 +1,6 @@
 (defproject morris "0.0.1-SNAPSHOT"
   :description "Cool new project to do things and stuff"
-  :dependencies [	[org.clojure/clojure "1.7.0"]
+  :dependencies [	[org.clojure/clojure "1.8.0"]
                   [io.aviso/pretty "0.1.34"]
   								[aysylu/loom "1.0.0"]]
 	:main morris.game
