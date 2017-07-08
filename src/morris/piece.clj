@@ -15,3 +15,4 @@
 
 (defn from-same-player? [pieces]
 	(= 1 (count (set (map #(extract-colour %) (filter some? pieces))))))
+

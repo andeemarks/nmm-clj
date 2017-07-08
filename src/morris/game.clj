@@ -32,14 +32,13 @@
 	(spit (str "target/board-latest.dot")    board-state)
 	(shell/sh "bash" "-c" "fdp target/board-latest.dot -Tsvg | display"))
 
-(defmulti process-round (fn [mode game piece] mode))
-
 (defn- piece-label [piece]
 	(let [piece-colour-code (ns-resolve 'io.aviso.ansi (symbol (str (piece/extract-colour piece) "-bg")))]
 		(piece-colour-code (str bold-red-font " [" piece "] " reset-font))))
 
+(defmulti process-round (fn [mode game piece] mode))
+
 (defmethod process-round :piece-placement [mode game piece]
-	(println "Handling placement...")
   (loop [move (keyword (get-input (str (piece-label piece) " Where do you want to place this piece?")))]
     (if (valid-placement? move (:game-state game))
     	(let [new-game-state (core/update-game game piece move)]
@@ -48,7 +47,6 @@
       	(keyword (get-input (str (piece-label piece) " That is not a valid position - where do you want to place this piece?")))))))
 
 (defmethod process-round :piece-removal [mode game piece]
-	(println "Handling removal...")
   (loop [location-to-remove (keyword (get-input (str (piece-label piece) " Mill completed! Which piece do you want to remove?")))]
     (if (valid-removal? location-to-remove (:game-state game))
     	(let [new-game-state (core/remove-piece game location-to-remove)]
