@@ -1,7 +1,9 @@
 (ns morris.game
 	(:require 
 		[morris.board :as board]
+		[io.aviso.ansi :refer :all]
 		[morris.core :as core]
+		[morris.piece :as piece]
 		[clojure.java.shell :as shell]))
 
 (defn get-input [prompt]
@@ -32,14 +34,18 @@
 
 (defmulti process-round (fn [mode game piece] mode))
 
+(defn- piece-label [piece]
+	(let [piece-colour-code (ns-resolve 'io.aviso.ansi (symbol (str (piece/extract-colour piece) "-bg")))]
+		(piece-colour-code (str bold-red-font " [" piece "] " reset-font))))
+
 (defmethod process-round :piece-placement [mode game piece]
 	(println "Handling placement...")
-  (loop [move (keyword (get-input (str "[" piece "] What is your move?")))]
+  (loop [move (keyword (get-input (str (piece-label piece) " Where do you want to place this piece?")))]
     (if (valid-placement? move (:game-state game))
     	(let [new-game-state (core/update-game game piece move)]
     		new-game-state)
       (recur 
-      	(keyword (get-input (str "[" piece "] That is not a valid position - what is your move?")))))))
+      	(keyword (get-input (str "[" piece "] That is not a valid position - where do you want to place this piece?")))))))
 
 (defmethod process-round :piece-removal [mode game piece]
 	(println "Handling removal...")
