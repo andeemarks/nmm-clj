@@ -45,20 +45,23 @@
     	(let [new-game-state (core/update-game game piece move)]
     		new-game-state)
       (recur 
-      	(keyword (get-input (str "[" piece "] That is not a valid position - where do you want to place this piece?")))))))
+      	(keyword (get-input (str (piece-label piece) " That is not a valid position - where do you want to place this piece?")))))))
 
 (defmethod process-round :piece-removal [mode game piece]
 	(println "Handling removal...")
-  (loop [location-to-remove (keyword (get-input (str "[" piece "] Mill completed! Which piece do you want to remove?")))]
+  (loop [location-to-remove (keyword (get-input (str (piece-label piece) " Mill completed! Which piece do you want to remove?")))]
     (if (valid-removal? location-to-remove (:game-state game))
     	(let [new-game-state (core/remove-piece game location-to-remove)]
     		new-game-state)
       (recur 
-      	(keyword (get-input (str "[" piece "] That is not a valid position - which piece to remove?")))))))
+      	(keyword (get-input (str (piece-label piece) " That is not a valid position - which piece to remove?")))))))
 
 (defn -main [& args]
 	(println "Welcome to Nine Men's Morris!")
-	(loop [game (core/init-game) piece (choose-piece game) round 1 mode :piece-placement]
+	(loop [	game (core/init-game) 
+					piece (choose-piece game) 
+					round 1 
+					mode :piece-placement]
 		(show (board/show game) round)
 		(let [game-in-progress (process-round mode game piece)]
 			(if (:completed-mill-event game-in-progress)
