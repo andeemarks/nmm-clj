@@ -10,6 +10,15 @@
   (println prompt)
   (read-line))
 
+(defn valid-move? [move game-state]
+	(let [components (re-find #"([a-z][1-9])/([a-z][1-9])" move)
+				origin (keyword (nth components 1))
+				destination (keyword (nth components 2))]
+		(and 
+			(board/location-exists? origin)
+			(board/location-available? destination game-state)
+			(not (board/location-available? origin game-state)))))
+
 (defn- valid-removal? [location-to-remove game-state]
 	(not 
 		(board/location-available? location-to-remove game-state)))
@@ -40,6 +49,13 @@
 
 (defmulti process-round (fn [mode game piece] mode))
 
+(defmethod process-round :piece-movement [mode game piece]
+  (loop [move (input-from-prompt piece " What is your move (from/to)?" game)]
+    (if (valid-move? move (:game-state game))
+    	(core/update-game game piece move)
+      (recur 
+      	(input-from-prompt piece " That is not a valid move - what is your move (from/to)?" game)))))
+
 (defmethod process-round :piece-placement [mode game piece]
   (loop [move (input-from-prompt piece " Where do you want to place this piece?" game)]
     (if (valid-placement? move (:game-state game))
@@ -64,11 +80,14 @@
 					round 1 
 					mode :piece-placement]
 		(show (board/show game) round)
-		(let [game-in-progress (process-round mode game piece)]
+		(let [game-in-progress (process-round mode game piece)
+					next-player (choose-piece game-in-progress)]
 			(cond 
+				(not next-player) ; next-player has no remaining pieces
+					(recur game-in-progress piece round :piece-movement)
 				(:completed-mill-event game-in-progress)
 		    	(recur game-in-progress piece round :piece-removal)
 				(:game-over-event game-in-progress)
 					(process-round :game-over)
 				:else
-	    		(recur game-in-progress (choose-piece game-in-progress) (inc round) :piece-placement)))))
+	    		(recur game-in-progress next-player (inc round) :piece-placement)))))
