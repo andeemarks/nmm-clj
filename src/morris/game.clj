@@ -36,21 +36,24 @@
 	(let [piece-colour-code (ns-resolve 'io.aviso.ansi (symbol (str (piece/extract-colour piece) "-bg")))]
 		(piece-colour-code (str bold-red-font " [" piece "] " reset-font))))
 
+(defn- input-from-prompt [piece prompt]
+	(keyword (get-input (str (piece-label piece) prompt))))
+
 (defmulti process-round (fn [mode game piece] mode))
 
 (defmethod process-round :piece-placement [mode game piece]
-  (loop [move (keyword (get-input (str (piece-label piece) " Where do you want to place this piece?")))]
+  (loop [move (input-from-prompt piece " Where do you want to place this piece?")]
     (if (valid-placement? move (:game-state game))
     	(core/update-game game piece move)
       (recur 
-      	(keyword (get-input (str (piece-label piece) " That is not a valid position - where do you want to place this piece?")))))))
+      	(input-from-prompt piece " That is not a valid position - where do you want to place this piece?")))))
 
 (defmethod process-round :piece-removal [mode game piece]
-  (loop [location-to-remove (keyword (get-input (str (piece-label piece) " Mill completed! Which piece do you want to remove?")))]
+  (loop [location-to-remove (input-from-prompt piece  " Mill completed! Which piece do you want to remove?")]
     (if (valid-removal? location-to-remove (:game-state game))
     	(core/remove-piece game location-to-remove)
       (recur 
-      	(keyword (get-input (str (piece-label piece) " That is not a valid position - which piece to remove?")))))))
+      	(input-from-prompt piece " That is not a valid position - which piece to remove?")))))
 
 (defmethod process-round :game-over [mode game piece]
 	(println "Game over!"))
