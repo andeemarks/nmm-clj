@@ -52,6 +52,9 @@
       (recur 
       	(keyword (get-input (str (piece-label piece) " That is not a valid position - which piece to remove?")))))))
 
+(defmethod process-round :game-over [mode game piece]
+	(println "Game over!"))
+
 (defn -main [& args]
 	(println "Welcome to Nine Men's Morris!")
 	(loop [	game (core/init-game) 
@@ -60,6 +63,10 @@
 					mode :piece-placement]
 		(show (board/show game) round)
 		(let [game-in-progress (process-round mode game piece)]
-			(if (:completed-mill-event game-in-progress)
-		    (recur game-in-progress piece round :piece-removal)
-	    	(recur game-in-progress (choose-piece game-in-progress) (inc round) :piece-placement)))))
+			(cond 
+				(:completed-mill-event game-in-progress)
+		    	(recur game-in-progress piece round :piece-removal)
+				(:game-over-event game-in-progress)
+					(process-round :game-over)
+				:else
+	    		(recur game-in-progress (choose-piece game-in-progress) (inc round) :piece-placement)))))
