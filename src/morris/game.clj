@@ -29,28 +29,30 @@
 	(spit (str "target/board-latest.dot")    board-state)
 	(shell/sh "bash" "-c" "fdp target/board-latest.dot -Tsvg | display"))
 
-(defn- piece-label [piece]
-	(let [piece-colour-code (ns-resolve 'io.aviso.ansi (symbol (str (piece/extract-colour piece) "-bg")))]
-		(piece-colour-code (str bold-red-font " [" piece "] " reset-font))))
+(defn- piece-label [piece game]
+	(let [piece-colour-code (ns-resolve 'io.aviso.ansi (symbol (str (piece/extract-colour piece) "-bg")))
+				white-piece-pool-size (count (:white-pieces game))
+				black-piece-pool-size (count (:black-pieces game))]
+		(piece-colour-code (str bold-red-font " [" piece "] " white-piece-pool-size "/white " black-piece-pool-size "/black remaining " reset-font))))
 
-(defn- input-from-prompt [piece prompt]
-	(keyword (get-input (str (piece-label piece) prompt))))
+(defn- input-from-prompt [piece prompt game]
+	(keyword (get-input (str (piece-label piece game) prompt))))
 
 (defmulti process-round (fn [mode game piece] mode))
 
 (defmethod process-round :piece-placement [mode game piece]
-  (loop [move (input-from-prompt piece " Where do you want to place this piece?")]
+  (loop [move (input-from-prompt piece " Where do you want to place this piece?" game)]
     (if (valid-placement? move (:game-state game))
     	(core/update-game game piece move)
       (recur 
-      	(input-from-prompt piece " That is not a valid position - where do you want to place this piece?")))))
+      	(input-from-prompt piece " That is not a valid position - where do you want to place this piece?" game)))))
 
 (defmethod process-round :piece-removal [mode game piece]
-  (loop [location-to-remove (input-from-prompt piece  " Mill completed! Which piece do you want to remove?")]
+  (loop [location-to-remove (input-from-prompt piece  " Mill completed! Which piece do you want to remove?" game)]
     (if (valid-removal? location-to-remove (:game-state game))
     	(core/remove-piece game location-to-remove)
       (recur 
-      	(input-from-prompt piece " That is not a valid position - which piece to remove?")))))
+      	(input-from-prompt piece " That is not a valid position - which piece to remove?" game)))))
 
 (defmethod process-round :game-over [mode game piece]
 	(println "Game over!"))
