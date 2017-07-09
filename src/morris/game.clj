@@ -20,10 +20,7 @@
 		(board/location-exists? move)))
 
 (defn choose-piece [game]
-	(if 
-		(>= 
-			(count (:white-pieces game)) 
-			(count (:black-pieces game)))
+	(if (>= (count (:white-pieces game)) (count (:black-pieces game)))
 		(first (:white-pieces game))
 		(first (:black-pieces game))))
 
