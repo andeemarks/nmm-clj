@@ -4,8 +4,7 @@
 
 (facts "moving pieces"
   (let [game (init-game)
-        after-move-1 (update-game game (first (:white-pieces game)) :a1)]
-
+        after-move-1 (update-game (init-game) (first (:white-pieces game)) :a1)]
     (fact "is illegal if the origin is unoccupied"
       (move-piece after-move-1 :a4 :a7)  => (throws IllegalStateException))
     (fact "is illegal if the destination is occupied"
