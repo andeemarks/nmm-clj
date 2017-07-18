@@ -167,3 +167,9 @@
 (defn neighbour? [board loc1 loc2]
 	(= 2 (count (bf-path board loc1 loc2))))
 
+(defn valid-move? [game-state origin destination]
+	(and 
+		(location-exists? origin)
+		(location-available? destination game-state)
+		(neighbour? (board) origin destination)
+		(not (location-available? origin game-state))))

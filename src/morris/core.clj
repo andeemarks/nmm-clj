@@ -18,16 +18,10 @@
 		:black-pieces (remove #(= piece-on-board %) black-pieces)
 		:game-state nil})
 
-(defn valid-move? [game origin destination]
-	(and 
-		(board/location-exists? origin)
-		(board/location-available? destination (:game-state game))
-		(board/neighbour? (:board game) origin destination)
-		(not (board/location-available? origin (:game-state game)))))
 
 (defn move-piece [game origin destination]
 	(let [piece-to-move (origin (:game-state game))]
-		(if (valid-move? game origin destination)
+		(if (board/valid-move? (:game-state game) origin destination)
 			(-> game
 				(assoc-in [:game-state destination] piece-to-move)
 				(update-in [:game-state] dissoc origin))
