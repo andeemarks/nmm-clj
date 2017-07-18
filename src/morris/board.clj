@@ -164,3 +164,6 @@
 (defn location-available? [location game-state]
 	(nil? (location game-state)))
 
+(defn neighbour? [board loc1 loc2]
+	(= 2 (count (bf-path board loc1 loc2))))
+

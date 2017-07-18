@@ -2,6 +2,21 @@
   (:require [midje.sweet :refer :all]
             [morris.core :refer :all]))
 
+(facts "moving pieces"
+  (let [game (init-game)
+        after-move-1 (update-game game (first (:white-pieces game)) :a1)]
+
+    (fact "is illegal if the origin is unoccupied"
+      (move-piece after-move-1 :a4 :a7)  => (throws IllegalStateException))
+    (fact "is illegal if the destination is occupied"
+      (move-piece after-move-1 :a1 :a1)  => (throws IllegalStateException))
+    (fact "is illegal if the destination is not adjacent to the origin"
+      (move-piece after-move-1 :a1 :b2)  => (throws IllegalStateException))
+    (fact "returns a new game state when successful"
+      (let [new-game-state (:game-state (move-piece after-move-1 :a1 :a4))]
+        (:a1 new-game-state) => nil
+        (:a4 new-game-state) => :white-1) )))
+
 (facts "removing pieces"
   (fact "changes only the game state if the location is occupied by another player"
     (let [game (init-game)

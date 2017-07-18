@@ -11,7 +11,7 @@
   (read-line))
 
 (defn valid-move? [move game-state]
-	(let [components (re-find #"([a-z][1-9])/([a-z][1-9])" move)
+	(let [components (re-find #"([a-z][\d])\/([a-z][\d])" move)
 				origin (keyword (nth components 1))
 				destination (keyword (nth components 2))]
 		(and 
@@ -44,31 +44,38 @@
 				black-piece-pool-size (count (:black-pieces game))]
 		(piece-colour-code (str bold-red-font " [" piece "] " white-piece-pool-size "/white " black-piece-pool-size "/black remaining " reset-font))))
 
-(defn- input-from-prompt [piece prompt game]
+(defn- player-label [player]
+	(let [piece-colour-code (ns-resolve 'io.aviso.ansi (symbol (str player "-bg")))]
+		(piece-colour-code (str bold-red-font " [" player "] " reset-font))))
+
+(defn- input-for-piece [piece prompt game]
 	(keyword (get-input (str (piece-label piece game) prompt))))
+
+(defn- input-for-player [player prompt]
+	(get-input (str (player-label player) prompt)))
 
 (defmulti process-round (fn [mode game piece] mode))
 
-(defmethod process-round :piece-movement [mode game piece]
-  (loop [move (input-from-prompt piece " What is your move (from/to)?" game)]
+(defmethod process-round :piece-movement [mode game player]
+  (loop [move (input-for-player player " What is your move (from/to)?")]
     (if (valid-move? move (:game-state game))
-    	(core/update-game game piece move)
+    	(core/update-game game player move)
       (recur 
-      	(input-from-prompt piece " That is not a valid move - what is your move (from/to)?" game)))))
+      	(input-for-player player " That is not a valid move - what is your move (from/to)?")))))
 
 (defmethod process-round :piece-placement [mode game piece]
-  (loop [move (input-from-prompt piece " Where do you want to place this piece?" game)]
+  (loop [move (input-for-piece piece " Where do you want to place this piece?" game)]
     (if (valid-placement? move (:game-state game))
     	(core/update-game game piece move)
       (recur 
-      	(input-from-prompt piece " That is not a valid position - where do you want to place this piece?" game)))))
+      	(input-for-piece piece " That is not a valid position - where do you want to place this piece?" game)))))
 
 (defmethod process-round :piece-removal [mode game piece]
-  (loop [location-to-remove (input-from-prompt piece  " Mill completed! Which piece do you want to remove?" game)]
+  (loop [location-to-remove (input-for-piece piece  " Mill completed! Which piece do you want to remove?" game)]
     (if (valid-removal? location-to-remove (:game-state game))
     	(core/remove-piece game location-to-remove)
       (recur 
-      	(input-from-prompt piece " That is not a valid position - which piece to remove?" game)))))
+      	(input-for-piece piece " That is not a valid position - which piece to remove?" game)))))
 
 (defmethod process-round :game-over [mode game piece]
 	(println "Game over!"))
@@ -81,13 +88,13 @@
 					mode :piece-placement]
 		(show (board/show game) round)
 		(let [game-in-progress (process-round mode game piece)
-					next-player (choose-piece game-in-progress)]
+					next-piece (choose-piece game-in-progress)]
 			(cond 
-				(not next-player) ; next-player has no remaining pieces
-					(recur game-in-progress piece round :piece-movement)
+				(not next-piece) ; next-piece has no remaining pieces
+					(recur game-in-progress "white" round :piece-movement)
 				(:completed-mill-event game-in-progress)
 		    	(recur game-in-progress piece round :piece-removal)
 				(:game-over-event game-in-progress)
 					(process-round :game-over)
 				:else
-	    		(recur game-in-progress next-player (inc round) :piece-placement)))))
+	    		(recur game-in-progress next-piece (inc round) :piece-placement)))))

@@ -5,6 +5,14 @@
             [morris.board :refer :all]
             ))
 
+(facts "checking for neighbours"
+  (fact "returns true when the locations are immediate neighbours"
+    (neighbour? (:board (init-game)) :a1 :a4) => true)
+  (fact "returns false when the locations are not connected"
+    (neighbour? (:board (init-game)) :a1 :b2) => false)
+  (fact "returns false when the locations are connected but not directly"
+    (neighbour? (:board (init-game)) :a1 :a7) => false))
+
 (facts "board layout"
   (fact "can show an empty board"
     (let [empty-position (attrs (layout (init-game)) :a1)]

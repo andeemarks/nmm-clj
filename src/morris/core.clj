@@ -18,6 +18,19 @@
 		:black-pieces (remove #(= piece-on-board %) black-pieces)
 		:game-state nil})
 
+(defn move-piece [game origin destination]
+	(let [game-state (:game-state game)
+				piece-to-move (origin game-state)]
+		(if (and 
+				(board/location-exists? origin)
+				(board/location-available? destination game-state)
+				(board/neighbour? (:board game) origin destination)
+				(not (board/location-available? origin game-state)))
+			(-> game
+				(assoc-in [:game-state destination] piece-to-move)
+				(update-in [:game-state] dissoc origin))
+			(throw (IllegalStateException. (str "Cannot move from " origin " to " destination))))))
+
 (defn update-game [game piece destination]
 	(let [current-game-state (:game-state game)]
 
