@@ -5,6 +5,8 @@
 		[morris.core :as core]
 		[morris.piece :as piece]
 		[clojure.string :as str]
+		[clojure.pprint :as pp]
+		[clojure.java.io :as io]
 		[clojure.java.shell :as shell]))
 
 (defn get-input [prompt]
@@ -50,10 +52,13 @@
 		(first (:white-pieces game))
 		(first (:black-pieces game))))
 
-(defn- show [board-state round]
-	(spit (str "target/board-" round ".dot") board-state)
-	(spit (str "target/board-latest.dot")    board-state)
-	(shell/sh "bash" "-c" "fdp target/board-latest.dot -Tsvg | display"))
+(defn- show [game round]
+	(let [board-state (board/show game)]
+		(spit (str "target/game-" round ".clj") game)
+		(spit (str "target/game-latest.clj")   game)
+		(spit (str "target/board-" round ".dot") board-state)
+		(spit (str "target/board-latest.dot")    board-state)
+		(shell/sh "bash" "-c" "fdp target/board-latest.dot -Tsvg | display")))
 
 (defn- piece-label [piece game]
 	(let [piece-colour-code (ns-resolve 'io.aviso.ansi (symbol (str (piece/extract-colour piece) "-bg")))
@@ -97,23 +102,31 @@
 (defmethod process-round :game-over [mode game piece player]
 	(println "Game over!"))
 
+(def existing-game-config-file "resources/save-state.clj")
+
+(defn- init-or-load-game []
+	(if (.exists (io/as-file existing-game-config-file))
+		(read-string (slurp existing-game-config-file))
+		(core/init-game)))
+
 (defn -main [& args]
 	(println "Welcome to Nine Men's Morris!")
-	(loop [	game (core/init-game) 
+	(loop [	game (init-or-load-game) 
 					piece (choose-piece game) 
 					current-player (choose-player game)
 					round 1 
 					mode :piece-placement]
-		(show (board/show game) round)
+		(pp/pprint game)
+		(show game round)
 		(let [game-in-progress (assoc (process-round mode game piece current-player) :current-player current-player)
 					next-player (choose-player game-in-progress)
 					next-piece (choose-piece game-in-progress)]
 			(cond 
-				(not next-piece) ; next-piece has no remaining pieces
-					(recur game-in-progress nil next-player round :piece-movement)
 				(:completed-mill-event game-in-progress)
 		    	(recur game-in-progress piece next-player round :piece-removal)
 				(:game-over-event game-in-progress)
 					(process-round :game-over)
+				(not next-piece) ; next-piece has no remaining pieces
+					(recur game-in-progress nil next-player round :piece-movement)
 				:else
 	    		(recur game-in-progress next-piece next-player (inc round) :piece-placement)))))
