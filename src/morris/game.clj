@@ -70,7 +70,7 @@
 (defmethod process-round :piece-movement [mode game player]
   (loop [move (input-for-player player " What is your move (from/to)?")]
     (if (valid-move? (move-components move) (:game-state game))
-    	(core/move-piece game player move)
+    	(core/move-piece game (:origin (move-components move)) (:destination (move-components move)))
       (recur 
       	(input-for-player player " That is not a valid move - what is your move (from/to)?")))))
 
