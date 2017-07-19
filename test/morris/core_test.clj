@@ -5,12 +5,18 @@
 (facts "moving pieces"
   (let [game (init-game)
         after-move-1 (update-game (init-game) (first (:white-pieces game)) :a1)]
+    (future-fact "is illegal if the origin is not for the current player"
+      (move-piece after-move-1 :a4 :a7)  => (throws IllegalStateException))
     (fact "is illegal if the origin is unoccupied"
       (move-piece after-move-1 :a4 :a7)  => (throws IllegalStateException))
     (fact "is illegal if the destination is occupied"
       (move-piece after-move-1 :a1 :a1)  => (throws IllegalStateException))
     (fact "is illegal if the destination is not adjacent to the origin"
       (move-piece after-move-1 :a1 :b2)  => (throws IllegalStateException))
+    (fact "checks for mill completion"
+      (let [game (init-game)
+            after-move-1 (assoc game :game-state {:a1 :white-1 :a4 :white-2 :d7 :white-3})]
+        (:completed-mill-event (move-piece after-move-1 :d7 :a7)) => #{:a1 :a4 :a7}))
     (fact "returns a new game state when successful"
       (let [new-game-state (:game-state (move-piece after-move-1 :a1 :a4))]
         (:a1 new-game-state) => nil

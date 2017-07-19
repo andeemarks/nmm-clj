@@ -18,13 +18,19 @@
 		:black-pieces (remove #(= piece-on-board %) black-pieces)
 		:game-state nil})
 
+(defn update-game-for-move [game piece-to-move origin destination]
+	(-> game
+		(assoc-in [:game-state destination] piece-to-move)
+		(update-in [:game-state] dissoc origin)))
 
 (defn move-piece [game origin destination]
 	(let [piece-to-move (origin (:game-state game))]
 		(if (board/valid-move? (:game-state game) origin destination)
-			(-> game
-				(assoc-in [:game-state destination] piece-to-move)
-				(update-in [:game-state] dissoc origin))
+			(let [new-game (update-game-for-move game piece-to-move origin destination)
+						mill-completed? (mill/find-completed-mills (:game-state new-game) destination)]
+				(if mill-completed?
+					(assoc new-game :completed-mill-event (first mill-completed?))
+					(assoc new-game :completed-mill-event nil)))
 			(throw (IllegalStateException. (str "Cannot move " piece-to-move " from " origin " to " destination))))))
 
 (defn update-game [game piece destination]
