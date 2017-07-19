@@ -13,9 +13,9 @@
   (println prompt)
   (read-line))
 
-(def location-re "([A-Za-z][\\d])")
-(def whitespace-re "\\s*")
-(def move-re (str location-re whitespace-re "/" whitespace-re location-re))
+(def ^:const location-re "([A-Za-z][\\d])")
+(def ^:const whitespace-re "\\s*")
+(def ^:const move-re (str location-re whitespace-re "/" whitespace-re location-re))
 
 (defn- location-to-move-component [components index]
 	(let [component (nth components index)]
@@ -71,6 +71,8 @@
 		(piece-colour-code (str bold-red-font " [" player "] " reset-font))))
 
 (defn- input-for-piece [piece prompt game]
+	; (pp/pprint piece)
+	; (pp/pprint game)
 	(keyword (get-input (str (piece-label piece game) prompt))))
 
 (defn- input-for-player [player prompt]
@@ -81,28 +83,28 @@
 (defmethod process-round :piece-movement [mode game piece player]
   (loop [move (input-for-player player " What is your move (from/to)?")]
     (if (valid-move? (move-components move) (:game-state game))
-    	(core/move-piece game (:origin (move-components move)) (:destination (move-components move)))
+    	(assoc (core/move-piece game (:origin (move-components move)) (:destination (move-components move))) :mode mode)
       (recur 
       	(input-for-player player " That is not a valid move - what is your move (from/to)?")))))
 
 (defmethod process-round :piece-placement [mode game piece player]
   (loop [move (input-for-piece piece " Where do you want to place this piece?" game)]
     (if (valid-placement? move (:game-state game))
-    	(core/update-game game piece move)
+    	(assoc (core/update-game game piece move) :mode mode)
       (recur 
       	(input-for-piece piece " That is not a valid position - where do you want to place this piece?" game)))))
 
 (defmethod process-round :piece-removal [mode game piece player]
   (loop [location-to-remove (input-for-piece piece  " Mill completed! Which piece do you want to remove?" game)]
     (if (valid-removal? location-to-remove (:game-state game))
-    	(core/remove-piece game location-to-remove)
+    	(assoc (core/remove-piece game location-to-remove) :mode mode)
       (recur 
       	(input-for-piece piece " That is not a valid position - which piece to remove?" game)))))
 
 (defmethod process-round :game-over [mode game piece player]
 	(println "Game over!"))
 
-(def existing-game-config-file "resources/save-state.clj")
+(def ^:const existing-game-config-file "resources/save-state.clj")
 
 (defn- init-or-load-game []
 	(if (.exists (io/as-file existing-game-config-file))
@@ -115,8 +117,7 @@
 					piece (choose-piece game) 
 					current-player (choose-player game)
 					round 1 
-					mode :piece-placement]
-		(pp/pprint game)
+					mode (:mode game)]
 		(show game round)
 		(let [game-in-progress (assoc (process-round mode game piece current-player) :current-player current-player)
 					next-player (choose-player game-in-progress)

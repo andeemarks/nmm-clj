@@ -8,6 +8,7 @@
 
 (defn init-game []
 	{:board (board/board)
+		:mode :piece-placement
 		:white-pieces (piece/make-white-pieces)
 		:black-pieces (piece/make-black-pieces)
 		:game-state nil})
