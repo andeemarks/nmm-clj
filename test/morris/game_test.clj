@@ -4,17 +4,14 @@
             [morris.core :as core]
             ))
 
-(facts "validating a move"
-  (fact "succeeds if the origin is occupied and the destination is not"
-    (valid-move? "a1/a4" {:a1 "white-1"}) => truthy)
-  (fact "fails if the origin is empty"
-    (valid-move? "a1/a4" nil) => falsey)
-  (fact "fails if the origin is not a valid location"
-    (valid-move? "aa/a4" nil) => falsey)
-  (fact "fails if the destination is not a valid location"
-    (valid-move? "a1/aa" nil) => falsey)
-  (fact "fails if the destination is occupied"
-    (valid-move? "a1/a4" {:a4 "black-3"}) => falsey))
+(fact "decomposing a move separates the origin and destination"
+  (move-components "a1/a4") => {:origin :a1 :destination :a4}
+  (move-components "a1") => {:origin nil :destination nil}
+  (move-components "/a1") => {:origin nil :destination nil}
+  (move-components " a1/a4 ") => {:origin :a1 :destination :a4}
+  (move-components " a1 / a4 ") => {:origin :a1 :destination :a4}
+  (move-components "A1/B4") => {:origin :a1 :destination :b4}
+  )
 
 (facts "choosing pieces from pool"
   (fact "will start with white pieces if no none have been played"

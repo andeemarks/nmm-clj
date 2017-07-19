@@ -4,20 +4,31 @@
 		[io.aviso.ansi :refer :all]
 		[morris.core :as core]
 		[morris.piece :as piece]
+		[clojure.string :as str]
 		[clojure.java.shell :as shell]))
 
 (defn get-input [prompt]
   (println prompt)
   (read-line))
 
-(defn valid-move? [move game-state]
-	(let [components (re-find #"([a-z][\d])\/([a-z][\d])" move)
-				origin (keyword (nth components 1))
-				destination (keyword (nth components 2))]
-		(and 
-			(board/location-exists? origin)
-			(board/location-available? destination game-state)
-			(not (board/location-available? origin game-state)))))
+(def location-re "([A-Za-z][\\d])")
+(def whitespace-re "\\s*")
+(def move-re (str location-re whitespace-re "/" whitespace-re location-re))
+
+(defn- location-to-move-component [components index]
+	(let [component (nth components index)]
+		(if component
+			(keyword (str/lower-case component))
+			nil)))
+
+(defn move-components [move]
+	(let [components (re-find (re-pattern move-re) move)
+				origin (location-to-move-component components 1)
+				destination (location-to-move-component components 2)]
+		{:origin origin :destination destination}))
+
+(defn valid-move? [move-components game-state]
+	(board/valid-move? game-state (:origin move-components) (:destination move-components)))
 
 (defn- valid-removal? [location-to-remove game-state]
 	(not 
@@ -58,8 +69,8 @@
 
 (defmethod process-round :piece-movement [mode game player]
   (loop [move (input-for-player player " What is your move (from/to)?")]
-    (if (valid-move? move (:game-state game))
-    	(core/update-game game player move)
+    (if (valid-move? (move-components move) (:game-state game))
+    	(core/move-piece game player move)
       (recur 
       	(input-for-player player " That is not a valid move - what is your move (from/to)?")))))
 
