@@ -13,6 +13,14 @@
   (move-components "A1/B4") => {:origin :a1 :destination :b4}
   )
 
+(facts "choosing a player"
+  (fact "white goes first"
+    (choose-player (core/init-game)) => "white")
+  (fact "white goes if current player is black"
+    (choose-player (assoc (core/init-game) :current-player "black")) => "white")
+  (fact "black goes if current player is white"
+    (choose-player (assoc (core/init-game) :current-player "white")) => "black"))
+
 (facts "choosing pieces from pool"
   (fact "will start with white pieces if no none have been played"
     (choose-piece (core/init-game)) => :white-1)

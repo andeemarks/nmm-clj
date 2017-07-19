@@ -39,6 +39,12 @@
 		(board/location-available? move game-state)
 		(board/location-exists? move)))
 
+(defn choose-player [game]
+	(let [current-player (:current-player game)]
+		(if (= "white" current-player)
+			"black"
+			"white")))
+
 (defn choose-piece [game]
 	(if (>= (count (:white-pieces game)) (count (:black-pieces game)))
 		(first (:white-pieces game))
@@ -65,47 +71,49 @@
 (defn- input-for-player [player prompt]
 	(get-input (str (player-label player) prompt)))
 
-(defmulti process-round (fn [mode game piece] mode))
+(defmulti process-round (fn [mode game piece player] mode))
 
-(defmethod process-round :piece-movement [mode game player]
+(defmethod process-round :piece-movement [mode game piece player]
   (loop [move (input-for-player player " What is your move (from/to)?")]
     (if (valid-move? (move-components move) (:game-state game))
     	(core/move-piece game (:origin (move-components move)) (:destination (move-components move)))
       (recur 
       	(input-for-player player " That is not a valid move - what is your move (from/to)?")))))
 
-(defmethod process-round :piece-placement [mode game piece]
+(defmethod process-round :piece-placement [mode game piece player]
   (loop [move (input-for-piece piece " Where do you want to place this piece?" game)]
     (if (valid-placement? move (:game-state game))
     	(core/update-game game piece move)
       (recur 
       	(input-for-piece piece " That is not a valid position - where do you want to place this piece?" game)))))
 
-(defmethod process-round :piece-removal [mode game piece]
+(defmethod process-round :piece-removal [mode game piece player]
   (loop [location-to-remove (input-for-piece piece  " Mill completed! Which piece do you want to remove?" game)]
     (if (valid-removal? location-to-remove (:game-state game))
     	(core/remove-piece game location-to-remove)
       (recur 
       	(input-for-piece piece " That is not a valid position - which piece to remove?" game)))))
 
-(defmethod process-round :game-over [mode game piece]
+(defmethod process-round :game-over [mode game piece player]
 	(println "Game over!"))
 
 (defn -main [& args]
 	(println "Welcome to Nine Men's Morris!")
 	(loop [	game (core/init-game) 
 					piece (choose-piece game) 
+					current-player (choose-player game)
 					round 1 
 					mode :piece-placement]
 		(show (board/show game) round)
-		(let [game-in-progress (process-round mode game piece)
+		(let [game-in-progress (assoc (process-round mode game piece current-player) :current-player current-player)
+					next-player (choose-player game-in-progress)
 					next-piece (choose-piece game-in-progress)]
 			(cond 
 				(not next-piece) ; next-piece has no remaining pieces
-					(recur game-in-progress "white" round :piece-movement)
+					(recur game-in-progress nil next-player round :piece-movement)
 				(:completed-mill-event game-in-progress)
-		    	(recur game-in-progress piece round :piece-removal)
+		    	(recur game-in-progress piece next-player round :piece-removal)
 				(:game-over-event game-in-progress)
 					(process-round :game-over)
 				:else
-	    		(recur game-in-progress next-piece (inc round) :piece-placement)))))
+	    		(recur game-in-progress next-piece next-player (inc round) :piece-placement)))))
