@@ -1,5 +1,6 @@
 (ns morris.game
 	(:require 
+		[taoensso.timbre :as log]
 		[morris.board :as board]
 		[io.aviso.ansi :refer :all]
 		[morris.core :as core]
@@ -80,6 +81,7 @@
 (defmulti process-round (fn [mode game piece player] mode))
 
 (defmethod process-round :piece-movement [mode game piece player]
+	(log/debug "Handling piece movement for piece: " piece)
   (loop [move (input-for-player player (str " What is your move (from/to) " (find-pieces game player) "?"))]
     (if (valid-move? (move-components move) (:game-state game))
     	(assoc (core/move-piece game (:origin (move-components move)) (:destination (move-components move))) :mode mode)
@@ -87,6 +89,7 @@
       	(input-for-player player " That is not a valid move - what is your move (from/to)?")))))
 
 (defmethod process-round :piece-placement [mode game piece player]
+	(log/debug "Handling piece placement for piece: " piece)
   (loop [move (input-for-piece player " Where do you want to place this piece?" game)]
     (if (valid-placement? move (:game-state game))
     	(assoc (core/update-game game piece move) :mode mode)
@@ -94,6 +97,7 @@
       	(input-for-piece piece " That is not a valid position - where do you want to place this piece?" game)))))
 
 (defmethod process-round :piece-removal [mode game piece player]
+	(log/debug "Handling piece placement for player: " player)
   (loop [location-to-remove (input-for-piece player  (str " Mill completed! Which piece do you want to remove " (find-pieces game player) "?") game)]
     (if (valid-removal? location-to-remove (:game-state game))
     	(assoc (core/remove-piece game location-to-remove) :mode mode)
@@ -106,9 +110,9 @@
 (def ^:const existing-game-config-file "resources/save-state.clj")
 
 (defn- reload-saved-game [saved-game]
-	(println "Found saved game at " saved-game)
+	(log/info "Found saved game at " saved-game)
 	(let [saved-game (read-string (slurp existing-game-config-file))]
-		(pp/pprint saved-game)
+		(log/info saved-game)
 		saved-game))
 
 (defn- init-or-load-game []
@@ -123,6 +127,8 @@
 					current-player (:current-player game)
 					mode (:mode game)]
 		(show game)
+		(log/info "Current piece: " piece)
+		(log/info "Current player: " current-player)
 		(let [game-in-progress (assoc (process-round mode game piece current-player) :current-player current-player)
 					next-player (choose-player game-in-progress)
 					next-piece (choose-piece game-in-progress)]
