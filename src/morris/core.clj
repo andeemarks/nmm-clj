@@ -14,10 +14,10 @@
 		:black-pieces (piece/make-black-pieces)
 		:game-state nil})
 
-(defn remove-piece-from-pool [piece-on-board white-pieces black-pieces]
-	{	:white-pieces (remove #(= piece-on-board %) white-pieces)
-		:black-pieces (remove #(= piece-on-board %) black-pieces)
-		:game-state nil})
+(defn remove-piece-from-pool [game piece-on-board]
+	(-> game
+		(assoc :white-pieces (remove #(= piece-on-board %) (:white-pieces game)))
+		(assoc :black-pieces (remove #(= piece-on-board %) (:black-pieces game)))))
 
 (defn update-game-for-move [game piece-to-move origin destination]
 	(-> game
@@ -41,7 +41,7 @@
 		(if (board/location-exists? destination)				
 			(if (board/location-available? destination current-game-state)
 				(let [new-game-state (merge current-game-state {destination piece})
-							game-with-updated-player-pools (remove-piece-from-pool piece (:white-pieces game) (:black-pieces game))
+							game-with-updated-player-pools (remove-piece-from-pool game piece)
 							new-game (assoc game-with-updated-player-pools :game-state new-game-state)
 							mill-completed? (mill/find-completed-mills new-game-state destination)]
 					(log/info "Placing " piece " on " destination)

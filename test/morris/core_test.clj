@@ -85,6 +85,7 @@
           updated-game (place-piece game (first (:white-pieces game)) :a1)]
        (:white-pieces updated-game) =not=> nil
        (:black-pieces updated-game) =not=> nil
+       (:current-player updated-game) =not=> nil
        (:game-state updated-game) =not=> nil
        ))
   (fact "reduces the number of pieces of the corresponding player"

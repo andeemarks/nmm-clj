@@ -83,39 +83,36 @@
 (defn- input-for-player [player prompt]
 	(get-input (str (player-label player) prompt)))
 
-(defmulti process-round (fn [mode game piece player] mode))
+(defmulti process-round (fn [mode game piece] mode))
 
-(defmethod process-round :game-over [mode game piece player]
-	(log/debug "GAME OVER for: " game)
-	(println "Game over!"))
-
-(defmethod process-round :piece-movement [mode game piece player]
-	(log/debug "PIECE MOVEMENT for piece: " piece)
-	(let [pieces-to-move (find-pieces game player)]
-	  (loop [move (input-for-player player (str " What is your move (from/to) " pieces-to-move "?"))]
+(defmethod process-round :piece-movement [mode game piece]
+	(log/info "PIECE MOVEMENT for piece: " piece)
+	(let [pieces-to-move (find-pieces game (:current-player game))]
+	  (loop [move (input-for-player (:current-player game) (str " What is your move (from/to) " pieces-to-move "?"))]
 	    (if (valid-move? (move-components move) (:game-state game))
 	    	(assoc (core/move-piece game (:origin (move-components move)) (:destination (move-components move))) :mode mode)
 	      (recur 
-	      	(input-for-player player (str " That is not a valid move - what is your move (from/to) " pieces-to-move "?")))))))
+	      	(input-for-player (:current-player game) (str " That is not a valid move - what is your move (from/to) " pieces-to-move "?")))))))
 
-(defmethod process-round :piece-placement [mode game piece player]
-	(log/debug "PIECE PLACEMENT for piece: " piece)
-  (loop [move (input-for-piece player " Where do you want to place this piece?" game)]
+(defmethod process-round :piece-placement [mode game piece]
+	(log/info "PIECE PLACEMENT for piece: " piece)
+  (loop [move (input-for-piece (:current-player game) " Where do you want to place this piece?" game)]
     (if (valid-placement? move (:game-state game))
     	(assoc (core/place-piece game piece move) :mode mode)
       (recur 
-      	(input-for-piece player " That is not a valid position - where do you want to place this piece?" game)))))
+      	(input-for-piece (:current-player game) " That is not a valid position - where do you want to place this piece?" game)))))
 
-(defmethod process-round :piece-removal [mode game piece player]
-	(log/debug "PIECE REMOVAL by player: " player)
+(defmethod process-round :piece-removal [mode game piece]
+	(log/info "PIECE REMOVAL by player: " (:current-player game))
 	(let [pieces-to-remove (find-pieces game (choose-player game))]
-  (loop [location-to-remove (input-for-piece player  (str " Mill completed! Which piece do you want to remove " pieces-to-remove "?") game)]
+  (loop [location-to-remove (input-for-piece (:current-player game)  (str " Mill completed! Which piece do you want to remove " pieces-to-remove "?") game)]
     (if (valid-removal? location-to-remove (:game-state game))
     	(assoc (core/remove-piece game location-to-remove) :mode mode)
       (recur 
-      	(input-for-piece player (str " That is not a valid position - which piece to remove " pieces-to-remove "?") game))))))
+      	(input-for-piece (:current-player game) (str " That is not a valid position - which piece to remove " pieces-to-remove "?") game))))))
 
-(defmethod process-round :game-over [mode game piece player]
+(defmethod process-round :game-over [mode game piece]
+	(log/info "GAME OVER for: " game)
 	(println "Game over!"))
 
 (def ^:const existing-game-config-file "resources/save-state.clj")
@@ -132,6 +129,8 @@
 		(core/init-game)))
 
 (defn switch-player [game]
+	(log/debug "Switching player from " (:current-player game))
+	(assert (:current-player game) "Game has not recorded current player")
 	(assoc game :current-player (choose-player game)))
 
 (log/merge-config! {:appenders {:spit (appenders/spit-appender {:fname "morris.log"})}})
@@ -142,20 +141,18 @@
 	(log/info "*** New game ***")
 	(loop [	game (init-or-load-game) 
 					piece (choose-piece game) 
-					current-player (:current-player game)
 					mode (:mode game)]
 		(show game)
-		(log/info "Current piece: " piece " for player: " current-player)
-		(let [game-in-progress (assoc (process-round mode game piece current-player) :current-player current-player)
-					next-player (choose-player game-in-progress)
+		(log/info "Current piece: " piece " for player: " (:current-player game))
+		(let [game-in-progress (process-round mode game piece)
 					next-piece (choose-piece game-in-progress)]
 			(save-game game-in-progress)
 			(cond 
 				(:completed-mill-event game-in-progress)
-		    	(recur game-in-progress piece current-player :piece-removal)
+		    	(recur game-in-progress piece :piece-removal)
 				(:game-over-event game-in-progress)
 					(process-round :game-over game-in-progress nil nil)
 				(not next-piece) ; next-piece has no remaining pieces
-					(recur game-in-progress nil next-player :piece-movement)
+					(recur (switch-player game-in-progress) nil :piece-movement)
 				:else
-	    		(recur game-in-progress next-piece next-player :piece-placement)))))
+	    		(recur (switch-player game-in-progress) next-piece :piece-placement)))))
