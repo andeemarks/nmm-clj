@@ -14,8 +14,6 @@
   )
 
 (facts "choosing a player"
-  (fact "white goes first"
-    (choose-player (core/init-game)) => "white")
   (fact "white goes if current player is black"
     (choose-player (assoc (core/init-game) :current-player "black")) => "white")
   (fact "black goes if current player is white"

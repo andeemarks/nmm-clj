@@ -69,8 +69,6 @@
 		(piece-colour-code (str bold-red-font " [" player "] " reset-font))))
 
 (defn- input-for-piece [player prompt game]
-	; (pp/pprint piece)
-	; (pp/pprint game)
 	(keyword (get-input (str (piece-label player game) prompt))))
 
 (defn- input-for-player [player prompt]
@@ -113,7 +111,7 @@
 	(println "Welcome to Nine Men's Morris!")
 	(loop [	game (init-or-load-game) 
 					piece (choose-piece game) 
-					current-player (choose-player game)
+					current-player (:current-player game)
 					mode (:mode game)]
 		(show game)
 		(let [game-in-progress (assoc (process-round mode game piece current-player) :current-player current-player)
