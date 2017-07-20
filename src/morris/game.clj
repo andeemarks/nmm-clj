@@ -126,6 +126,7 @@
 
 (defn -main [& args]
 	(println "Welcome to Nine Men's Morris!")
+	(log/info "*** New game ***")
 	(loop [	game (init-or-load-game) 
 					piece (choose-piece game) 
 					current-player (:current-player game)

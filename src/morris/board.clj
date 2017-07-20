@@ -1,6 +1,7 @@
 (ns morris.board
 	(:require 
 		[loom.graph :refer :all]
+		[taoensso.timbre :as log]
 		[morris.piece :as piece]
 		[loom.attr :refer :all]
 		[loom.alg :refer :all]
@@ -159,13 +160,19 @@
 	])
 
 (defn location-exists? [location]
-	(has-node? (board) location))
+	(let [result (has-node? (board) location)]
+		(log/debug "location-exists? for " location "=> " result)
+		result))
 
 (defn location-available? [location game-state]
-	(nil? (location game-state)))
+	(let [result (nil? (location game-state))]
+		(log/debug "location-available? for " location " with " game-state "=> " result)
+		result))
 
 (defn neighbour? [board loc1 loc2]
-	(= 2 (count (bf-path board loc1 loc2))))
+	(let [result (= 2 (count (bf-path board loc1 loc2)))]
+		(log/debug "neighbour? of " loc1 " and " loc2 "=> " result)
+		result))
 
 (defn valid-move? [game-state origin destination]
 	(and 
