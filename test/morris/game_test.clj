@@ -35,3 +35,9 @@
     (find-pieces (assoc (core/init-game) :game-state {:b2 :black-1}) "black") => (just [:b2])
     (find-pieces (assoc (core/init-game) :game-state {:a1 :white-1 :b2 :black-1 :f4 :white-3}) "white") => (just [:a1 :f4])
     ))
+
+(fact "switching players alternates between black and white"
+  (:current-player (core/init-game)) => "white"
+  (:current-player (switch-player (core/init-game))) => "black"
+  (:current-player (switch-player (switch-player (core/init-game)))) => "white"
+  (:current-player (switch-player (switch-player (switch-player (core/init-game))))) => "black")

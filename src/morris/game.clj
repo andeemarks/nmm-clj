@@ -131,6 +131,9 @@
 		(reload-saved-game existing-game-config-file)
 		(core/init-game)))
 
+(defn switch-player [game]
+	(assoc game :current-player (choose-player game)))
+
 (log/merge-config! {:appenders {:spit (appenders/spit-appender {:fname "morris.log"})}})
 (log/merge-config! {:appenders {:println nil}})
 
