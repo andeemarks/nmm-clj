@@ -1,6 +1,7 @@
 (ns morris.game
 	(:require 
 		[taoensso.timbre :as log]
+		[taoensso.timbre.appenders.core :as appenders]
 		[morris.board :as board]
 		[io.aviso.ansi :refer :all]
 		[morris.core :as core]
@@ -119,6 +120,9 @@
 	(if (.exists (io/as-file existing-game-config-file))
 		(reload-saved-game existing-game-config-file)
 		(core/init-game)))
+
+(log/merge-config! {:appenders {:spit (appenders/spit-appender {:fname "morris.log"})}})
+(log/merge-config! {:appenders {:println nil}})
 
 (defn -main [& args]
 	(println "Welcome to Nine Men's Morris!")
