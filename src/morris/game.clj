@@ -93,7 +93,7 @@
 	(log/debug "Handling piece placement for piece: " piece)
   (loop [move (input-for-piece player " Where do you want to place this piece?" game)]
     (if (valid-placement? move (:game-state game))
-    	(assoc (core/update-game game piece move) :mode mode)
+    	(assoc (core/place-piece game piece move) :mode mode)
       (recur 
       	(input-for-piece piece " That is not a valid position - where do you want to place this piece?" game)))))
 
@@ -131,8 +131,7 @@
 					current-player (:current-player game)
 					mode (:mode game)]
 		(show game)
-		(log/info "Current piece: " piece)
-		(log/info "Current player: " current-player)
+		(log/info "Current piece: " piece " for player: " current-player)
 		(let [game-in-progress (assoc (process-round mode game piece current-player) :current-player current-player)
 					next-player (choose-player game-in-progress)
 					next-piece (choose-piece game-in-progress)]

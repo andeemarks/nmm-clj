@@ -1,6 +1,7 @@
 (ns morris.core
 	(:require 
 		[morris.board :as board]
+		[taoensso.timbre :as log]
 		[morris.mill :as mill]
 		[clojure.string :as str]
 		[morris.piece :as piece]
@@ -28,12 +29,13 @@
 		(if (board/valid-move? (:game-state game) origin destination)
 			(let [new-game (update-game-for-move game piece-to-move origin destination)
 						mill-completed? (mill/find-completed-mills (:game-state new-game) destination)]
+				(log/info "Moving " piece-to-move " from " origin " to " destination)
 				(if mill-completed?
 					(assoc new-game :completed-mill-event (first mill-completed?))
 					(assoc new-game :completed-mill-event nil)))
 			(throw (IllegalStateException. (str "Cannot move " piece-to-move " from " origin " to " destination))))))
 
-(defn update-game [game piece destination]
+(defn place-piece [game piece destination]
 	(let [current-game-state (:game-state game)]
 
 		(if (board/location-exists? destination)				
@@ -42,6 +44,7 @@
 							game-with-updated-player-pools (remove-piece-from-pool piece (:white-pieces game) (:black-pieces game))
 							new-game (assoc game-with-updated-player-pools :game-state new-game-state)
 							mill-completed? (mill/find-completed-mills new-game-state destination)]
+					(log/info "Placing " piece " on " destination)
 					(if mill-completed?
 						(assoc new-game :completed-mill-event (first mill-completed?))
 						(assoc new-game :completed-mill-event nil)))
@@ -64,6 +67,7 @@
 												(update-in [:game-state] dissoc location-containing-piece)
 												(dissoc :completed-mill-event))
 					game-finished? (check-for-end-game updated-game)]
+			(log/info "Removing piece from " location-containing-piece)
 			(if game-finished?
 				(assoc updated-game :game-over-event true)
 				(assoc updated-game :game-over-event nil)))
