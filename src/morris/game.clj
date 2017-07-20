@@ -86,15 +86,17 @@
 (defmulti process-round (fn [mode game piece player] mode))
 
 (defmethod process-round :game-over [mode game piece player]
+	(log/debug "GAME OVER for: " game)
 	(println "Game over!"))
 
 (defmethod process-round :piece-movement [mode game piece player]
 	(log/debug "PIECE MOVEMENT for piece: " piece)
-  (loop [move (input-for-player player (str " What is your move (from/to) " (find-pieces game player) "?"))]
-    (if (valid-move? (move-components move) (:game-state game))
-    	(assoc (core/move-piece game (:origin (move-components move)) (:destination (move-components move))) :mode mode)
-      (recur 
-      	(input-for-player player (str " That is not a valid move - what is your move (from/to) " (find-pieces game player) "?"))))))
+	(let [pieces-to-move (find-pieces game player)]
+	  (loop [move (input-for-player player (str " What is your move (from/to) " pieces-to-move "?"))]
+	    (if (valid-move? (move-components move) (:game-state game))
+	    	(assoc (core/move-piece game (:origin (move-components move)) (:destination (move-components move))) :mode mode)
+	      (recur 
+	      	(input-for-player player (str " That is not a valid move - what is your move (from/to) " pieces-to-move "?")))))))
 
 (defmethod process-round :piece-placement [mode game piece player]
 	(log/debug "PIECE PLACEMENT for piece: " piece)
@@ -106,11 +108,12 @@
 
 (defmethod process-round :piece-removal [mode game piece player]
 	(log/debug "PIECE REMOVAL by player: " player)
-  (loop [location-to-remove (input-for-piece player  (str " Mill completed! Which piece do you want to remove " (find-pieces game (choose-player game)) "?") game)]
+	(let [pieces-to-remove (find-pieces game (choose-player game))]
+  (loop [location-to-remove (input-for-piece player  (str " Mill completed! Which piece do you want to remove " pieces-to-remove "?") game)]
     (if (valid-removal? location-to-remove (:game-state game))
     	(assoc (core/remove-piece game location-to-remove) :mode mode)
       (recur 
-      	(input-for-piece player (str " That is not a valid position - which piece to remove " (find-pieces game (choose-player game)) "?") game)))))
+      	(input-for-piece player (str " That is not a valid position - which piece to remove " pieces-to-remove "?") game))))))
 
 (defmethod process-round :game-over [mode game piece player]
 	(println "Game over!"))
