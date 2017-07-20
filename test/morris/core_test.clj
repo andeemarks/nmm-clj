@@ -32,6 +32,7 @@
         (:black-pieces updated-game) => (:black-pieces stub-completed-mill) 
         (:completed-mill-event updated-game) => nil
         (:game-state updated-game) => {} )) )
+  (future-fact "is illegal if the location is for the current player")
   (fact "will end the game if the opposition has less than three available pieces"
     (let [game (init-game)
           game-after-placing-piece-to-remove (update-game game (first (:white-pieces game)) :a1)

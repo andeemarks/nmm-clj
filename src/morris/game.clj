@@ -29,6 +29,9 @@
 				destination (location-to-move-component components 2)]
 		{:origin origin :destination destination}))
 
+(defn find-pieces [game player]
+	(keys (into '{} (filter #(str/starts-with? (name (val %)) player) (:game-state game)))))
+
 (defn valid-move? [move-components game-state]
 	(board/valid-move? game-state (:origin move-components) (:destination move-components)))
 
@@ -77,7 +80,7 @@
 (defmulti process-round (fn [mode game piece player] mode))
 
 (defmethod process-round :piece-movement [mode game piece player]
-  (loop [move (input-for-player player " What is your move (from/to)?")]
+  (loop [move (input-for-player player (str " What is your move (from/to) " (find-pieces game player) "?"))]
     (if (valid-move? (move-components move) (:game-state game))
     	(assoc (core/move-piece game (:origin (move-components move)) (:destination (move-components move))) :mode mode)
       (recur 
@@ -91,7 +94,7 @@
       	(input-for-piece piece " That is not a valid position - where do you want to place this piece?" game)))))
 
 (defmethod process-round :piece-removal [mode game piece player]
-  (loop [location-to-remove (input-for-piece player  " Mill completed! Which piece do you want to remove?" game)]
+  (loop [location-to-remove (input-for-piece player  (str " Mill completed! Which piece do you want to remove " (find-pieces game player) "?") game)]
     (if (valid-removal? location-to-remove (:game-state game))
     	(assoc (core/remove-piece game location-to-remove) :mode mode)
       (recur 
@@ -102,9 +105,15 @@
 
 (def ^:const existing-game-config-file "resources/save-state.clj")
 
+(defn- reload-saved-game [saved-game]
+	(println "Found saved game at " saved-game)
+	(let [saved-game (read-string (slurp existing-game-config-file))]
+		(pp/pprint saved-game)
+		saved-game))
+
 (defn- init-or-load-game []
 	(if (.exists (io/as-file existing-game-config-file))
-		(read-string (slurp existing-game-config-file))
+		(reload-saved-game existing-game-config-file)
 		(core/init-game)))
 
 (defn -main [& args]
