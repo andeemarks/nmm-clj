@@ -7,11 +7,11 @@
 
 (facts "checking for neighbours"
   (fact "returns true when the locations are immediate neighbours"
-    (neighbour? (:board (core/init-game)) :a1 :a4) => true)
+    (neighbour? (board) :a1 :a4) => true)
   (fact "returns false when the locations are not connected"
-    (neighbour? (:board (core/init-game)) :a1 :b2) => false)
+    (neighbour? (board) :a1 :b2) => false)
   (fact "returns false when the locations are connected but not directly"
-    (neighbour? (:board (core/init-game)) :a1 :a7) => false))
+    (neighbour? (board) :a1 :a7) => false))
 
 (facts "checking for legal piece movement"
   (fact "returns false if the origin is unoccupied"

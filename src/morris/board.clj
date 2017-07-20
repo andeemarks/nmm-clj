@@ -123,7 +123,7 @@
 		board))
 
 (defn layout [game]
-	(-> (:board game)
+	(-> (board)
 			(add-common-layout)
 			(add-position-hints)
 			(add-completed-mills (:completed-mill-event game))

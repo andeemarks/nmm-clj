@@ -28,7 +28,6 @@
           after-move-1 (update-game game (first (:white-pieces game)) :a1)
           stub-completed-mill (assoc after-move-1 :completed-mill-event "foo")
           updated-game (remove-piece stub-completed-mill :a1)]
-        (:board updated-game) => (:board stub-completed-mill) 
         (:white-pieces updated-game) => (:white-pieces stub-completed-mill) 
         (:black-pieces updated-game) => (:black-pieces stub-completed-mill) 
         (:completed-mill-event updated-game) => nil
@@ -80,7 +79,6 @@
   (fact "returns a new game state if the location is unoccupied"
     (let [game (init-game)
           updated-game (update-game game (first (:white-pieces game)) :a1)]
-       (:board updated-game) =not=> nil
        (:white-pieces updated-game) =not=> nil
        (:black-pieces updated-game) =not=> nil
        (:game-state updated-game) =not=> nil

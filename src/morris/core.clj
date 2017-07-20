@@ -7,16 +7,14 @@
 		))
 
 (defn init-game []
-	{:board (board/board)
-		:mode :piece-placement
+	{:mode :piece-placement
 		:round 1
 		:white-pieces (piece/make-white-pieces)
 		:black-pieces (piece/make-black-pieces)
 		:game-state nil})
 
 (defn remove-piece-from-pool [piece-on-board white-pieces black-pieces]
-	{:board (board/board)
-		:white-pieces (remove #(= piece-on-board %) white-pieces)
+	{	:white-pieces (remove #(= piece-on-board %) white-pieces)
 		:black-pieces (remove #(= piece-on-board %) black-pieces)
 		:game-state nil})
 
