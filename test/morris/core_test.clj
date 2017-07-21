@@ -10,13 +10,13 @@
         after-move-1 (place-piece (init-game) (first (:white-pieces game)) :a1)]
     (fact "is illegal if the origin is not for the current player"
       (let [after-player-switch (assoc after-move-1 :current-player "black")]
-        (move-piece after-player-switch :a1 :a4)  => (throws IllegalStateException)))
+        (move-piece after-player-switch :a1 :a4)  => (throws IllegalArgumentException)))
     (fact "is illegal if the origin is unoccupied"
-      (move-piece after-move-1 :a4 :a7)  => (throws IllegalStateException))
+      (move-piece after-move-1 :a4 :a7)  => (throws IllegalArgumentException))
     (fact "is illegal if the destination is occupied"
-      (move-piece after-move-1 :a1 :a1)  => (throws IllegalStateException))
+      (move-piece after-move-1 :a1 :a1)  => (throws IllegalArgumentException))
     (fact "is illegal if the destination is not adjacent to the origin"
-      (move-piece after-move-1 :a1 :b2)  => (throws IllegalStateException))
+      (move-piece after-move-1 :a1 :b2)  => (throws IllegalArgumentException))
     (fact "checks for mill completion"
       (let [game (init-game)
             after-move-1 (assoc game :game-state {:a1 :white-1 :a4 :white-2 :d7 :white-3})]
@@ -91,5 +91,5 @@
     (let [game (init-game)
           updated-game (place-piece game (first (:white-pieces game)) :a1)
           piece (first (:black-pieces updated-game))]      
-      (place-piece updated-game piece :a1) => (throws IllegalStateException)))
+      (place-piece updated-game piece :a1) => (throws IllegalArgumentException)))
   )

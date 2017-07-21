@@ -39,20 +39,17 @@
 			(let [new-game (update-game-for-move game piece-to-move origin destination)]
 				(log/info "Moving " piece-to-move " from " origin " to " destination)
 				(handle-mill-completion-event new-game destination))
-			(throw (IllegalStateException. (str "Cannot move " piece-to-move " from " origin " to " destination))))))
+			(throw (IllegalArgumentException. (str "Cannot move " piece-to-move " from " origin " to " destination))))))
 
 (defn place-piece [game piece destination]
 	(let [current-game-state (:game-state game)]
-
-		(if (board/location-exists? destination)				
-			(if (board/location-available? destination current-game-state)
-				(let [new-game-state (merge current-game-state {destination piece})
-							game-with-updated-player-pools (remove-piece-from-pool game piece)
-							new-game (assoc game-with-updated-player-pools :game-state new-game-state)]
-					(log/info "Placing " piece " on " destination)
-					(handle-mill-completion-event new-game destination))
-				(throw (IllegalStateException. (str "Location " destination " is already occupied"))))
-			(throw (IllegalArgumentException. (str "Location " destination " does not exist on board"))))))
+		(if (board/valid-placement? destination current-game-state)				
+			(let [new-game-state (merge current-game-state {destination piece})
+						game-with-updated-player-pools (remove-piece-from-pool game piece)
+						new-game (assoc game-with-updated-player-pools :game-state new-game-state)]
+				(log/info "Placing " piece " on " destination)
+				(handle-mill-completion-event new-game destination))
+			(throw (IllegalArgumentException. (str "Piece " piece " cannot be placed on location " destination))))))
 
 (defn remove-piece [game location-containing-piece]
 	(if (board/valid-removal? (:current-player game) location-containing-piece (:game-state game))

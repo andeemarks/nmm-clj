@@ -180,10 +180,10 @@
 			result)
 		false))
 
-(defn valid-placement? [move game-state]
+(defn valid-placement? [destination game-state]
 	(and 
-		(location-available? move game-state)
-		(location-exists? move)))
+		(location-available? destination game-state)
+		(location-exists? destination)))
 
 (defn valid-removal? [current-player location-to-remove game-state]
 	(and
