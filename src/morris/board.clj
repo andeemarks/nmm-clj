@@ -1,12 +1,10 @@
 (ns morris.board
-	(:require 
-		[loom.graph :refer :all]
-		[taoensso.timbre :as log]
-		[morris.piece :as piece]
-		[loom.attr :refer :all]
-		[loom.alg :refer :all]
-		[loom.io :refer :all]
-		))
+  (:require [loom.alg :refer :all]
+            [loom.attr :refer :all]
+            [loom.graph :refer :all]
+            [loom.io :refer :all]
+            [morris.piece :as piece]
+            [taoensso.timbre :as log]))
 
 (defn make-location [id] id)
 

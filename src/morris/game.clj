@@ -1,15 +1,12 @@
 (ns morris.game
-	(:require 
-		[taoensso.timbre :as log]
-		[taoensso.timbre.appenders.core :as appenders]
-		[io.aviso.ansi :refer :all]
-		[morris.board :as board]
-		[morris.core :as core]
-		[morris.piece :as piece]
-		[clojure.string :as str]
-		[clojure.pprint :as pp]
-		[clojure.java.io :as io]
-		[clojure.java.shell :as shell]))
+  (:require [clojure.java.io :as io]
+            [clojure.java.shell :as shell]
+            [clojure.string :as str]
+            [io.aviso.ansi :refer :all]
+            [morris.board :as board]
+            [morris.core :as core]
+            [taoensso.timbre :as log]
+            [taoensso.timbre.appenders.core :as appenders]))
 
 (defn get-input [prompt]
   (println prompt)

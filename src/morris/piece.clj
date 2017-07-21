@@ -1,5 +1,5 @@
 (ns morris.piece
-	(:require [clojure.string :as str]))
+  (:require [clojure.string :as str]))
 
 (defn- make-white-piece [id] (keyword (str "white-" id)))
 (defn- make-black-piece [id] (keyword (str "black-" id)))

@@ -1,11 +1,9 @@
 (ns morris.core
-	(:require 
-		[taoensso.timbre :as log]
-		[clojure.string :as str]
-		[morris.board :as board]
-		[morris.mill :as mill]
-		[morris.piece :as piece]
-		))
+  (:require [clojure.string :as str]
+            [morris.board :as board]
+            [morris.mill :as mill]
+            [morris.piece :as piece]
+            [taoensso.timbre :as log]))
 
 (defn init-game []
 	{:mode :piece-placement
