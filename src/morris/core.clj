@@ -1,6 +1,5 @@
 (ns morris.core
-  (:require [clojure.string :as str]
-            [morris.board :as board]
+  (:require [morris.board :as board]
             [morris.mill :as mill]
             [morris.piece :as piece]
             [taoensso.timbre :as log]))
@@ -49,27 +48,14 @@
 				(throw (IllegalStateException. (str "Location " destination " is already occupied"))))
 			(throw (IllegalArgumentException. (str "Location " destination " does not exist on board"))))))
 
-(defn check-for-end-game [game]
-	(let [white-piece-pool-size (count (:white-pieces game))
-				black-piece-pool-size (count (:black-pieces game))
-				white-pieces-on-board-count (count (filter #(str/starts-with? (val %) ":white") (:game-state game)))
-				black-pieces-on-board-count (count (filter #(str/starts-with? (val %) ":black") (:game-state game)))
-				insufficient-white-pieces? (< (+ white-pieces-on-board-count white-piece-pool-size) 3)
-				insufficient-black-pieces? (< (+ black-pieces-on-board-count black-piece-pool-size) 3)]
-		(or insufficient-white-pieces? insufficient-black-pieces?)))
-
 (defn remove-piece [game location-containing-piece]
-	(let [piece-to-remove (get (:game-state game) location-containing-piece)]
-		(if (board/location-available? location-containing-piece (:game-state game))
-			(throw (IllegalArgumentException. (str "Location " location-containing-piece " is not occupied")))
-			(if (piece/is-from-player? piece-to-remove (:current-player game))
-				(throw (IllegalArgumentException. (str (:current-player game) " cannot remove their own piece at " location-containing-piece)))
-				(let [updated-game (-> game
-														(update-in [:game-state] dissoc location-containing-piece)
-														(dissoc :completed-mill-event))
-							game-finished? (check-for-end-game updated-game)]
-					(log/info "Removing piece from " location-containing-piece)
-					(if game-finished?
-						(assoc updated-game :game-over-event true)
-						(assoc updated-game :game-over-event nil)))
-		 	))))
+	(if (board/valid-removal? (:current-player game) location-containing-piece (:game-state game))
+		(let [updated-game (-> game
+												(update-in [:game-state] dissoc location-containing-piece)
+												(dissoc :completed-mill-event))
+					game-finished? (board/check-for-end-game (:white-pieces updated-game) (:black-pieces updated-game) (:game-state updated-game))]
+			(log/info "Removing piece from " location-containing-piece)
+			(if game-finished?
+				(assoc updated-game :game-over-event true)
+				(assoc updated-game :game-over-event nil))) 
+		(throw (IllegalArgumentException. (str "Location " location-containing-piece " cannot be removed by " (:current-player game))))))

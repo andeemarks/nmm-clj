@@ -1,5 +1,6 @@
 (ns morris.board
-  (:require [loom.alg :refer :all]
+  (:require [clojure.string :as str]
+            [loom.alg :refer :all]
             [loom.attr :refer :all]
             [loom.graph :refer :all]
             [loom.io :refer :all]
@@ -196,3 +197,12 @@
 		(neighbour? (board) origin destination)
 		(occupied-by-current-player? current-player (origin game-state))
 		(not (location-available? origin game-state))))
+
+(defn check-for-end-game [white-pieces black-pieces game-state]
+	(let [white-piece-pool-size (count white-pieces)
+				black-piece-pool-size (count black-pieces)
+				white-pieces-on-board-count (count (filter #(str/starts-with? (val %) ":white") game-state))
+				black-pieces-on-board-count (count (filter #(str/starts-with? (val %) ":black") game-state))
+				insufficient-white-pieces? (< (+ white-pieces-on-board-count white-piece-pool-size) 3)
+				insufficient-black-pieces? (< (+ black-pieces-on-board-count black-piece-pool-size) 3)]
+		(or insufficient-white-pieces? insufficient-black-pieces?)))
