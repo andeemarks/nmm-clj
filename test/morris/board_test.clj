@@ -43,17 +43,20 @@
 (defn- n-black-pieces [n] (take n (piece/make-black-pieces)))
 (def all-black-pieces (n-black-pieces 10))
 (def all-white-pieces (n-white-pieces 10))
+(def empty-board-state nil)
 
 (facts "checking for end game"
-  (fact "returns true if the combination of played and pool pieces is less than three"
-    (let [empty-board-state nil]
-      (end-game? all-white-pieces all-black-pieces empty-board-state) => false
-      (end-game? nil all-black-pieces empty-board-state) => true
-      (end-game? (n-white-pieces 3) all-black-pieces empty-board-state) => false
-      (end-game? (n-white-pieces 2) all-black-pieces empty-board-state) => true
-      (end-game? (n-white-pieces 2) all-black-pieces {:a1 :white-1}) => false
-      (end-game? all-white-pieces nil empty-board-state) => true
-      (end-game? all-white-pieces (n-black-pieces 3) empty-board-state) => false
-      (end-game? all-white-pieces (n-black-pieces 2) empty-board-state) => true
-      (end-game? all-white-pieces (n-black-pieces 2) {:a1 :black-1}) => false
-    )))
+  (tabular
+    (fact "returns true if the combination of played and pool pieces is less than three"
+      (end-game? ?white-pieces ?black-pieces ?game-state) => ?expected)
+      ?white-pieces       ?black-pieces       ?game-state       ?expected
+      all-white-pieces    all-black-pieces    empty-board-state false
+      nil                 all-black-pieces    empty-board-state true
+      (n-white-pieces 3)  all-black-pieces    empty-board-state false
+      (n-white-pieces 2)  all-black-pieces    empty-board-state true
+      (n-white-pieces 2)  all-black-pieces    {:a1 :white-1}    false
+      all-white-pieces    nil                 empty-board-state true
+      all-white-pieces    (n-black-pieces 3)  empty-board-state false
+      all-white-pieces    (n-black-pieces 2)  empty-board-state true
+      all-white-pieces    (n-black-pieces 2) {:a1 :black-1}     false
+      ))
