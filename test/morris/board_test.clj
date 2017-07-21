@@ -47,13 +47,13 @@
 (facts "checking for end game"
   (fact "returns true if the combination of played and pool pieces is less than three"
     (let [empty-board-state nil]
-      (check-for-end-game all-white-pieces all-black-pieces empty-board-state) => false
-      (check-for-end-game nil all-black-pieces empty-board-state) => true
-      (check-for-end-game (n-white-pieces 3) all-black-pieces empty-board-state) => false
-      (check-for-end-game (n-white-pieces 2) all-black-pieces empty-board-state) => true
-      (check-for-end-game (n-white-pieces 2) all-black-pieces {:a1 :white-1}) => false
-      (check-for-end-game all-white-pieces nil empty-board-state) => true
-      (check-for-end-game all-white-pieces (n-black-pieces 3) empty-board-state) => false
-      (check-for-end-game all-white-pieces (n-black-pieces 2) empty-board-state) => true
-      (check-for-end-game all-white-pieces (n-black-pieces 2) {:a1 :black-1}) => false
+      (end-game? all-white-pieces all-black-pieces empty-board-state) => false
+      (end-game? nil all-black-pieces empty-board-state) => true
+      (end-game? (n-white-pieces 3) all-black-pieces empty-board-state) => false
+      (end-game? (n-white-pieces 2) all-black-pieces empty-board-state) => true
+      (end-game? (n-white-pieces 2) all-black-pieces {:a1 :white-1}) => false
+      (end-game? all-white-pieces nil empty-board-state) => true
+      (end-game? all-white-pieces (n-black-pieces 3) empty-board-state) => false
+      (end-game? all-white-pieces (n-black-pieces 2) empty-board-state) => true
+      (end-game? all-white-pieces (n-black-pieces 2) {:a1 :black-1}) => false
     )))

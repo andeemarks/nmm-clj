@@ -53,7 +53,7 @@
 		(let [updated-game (-> game
 												(update-in [:game-state] dissoc location-containing-piece)
 												(dissoc :completed-mill-event))
-					game-finished? (board/check-for-end-game (:white-pieces updated-game) (:black-pieces updated-game) (:game-state updated-game))]
+					game-finished? (board/end-game? (:white-pieces updated-game) (:black-pieces updated-game) (:game-state updated-game))]
 			(log/info "Removing piece from " location-containing-piece)
 			(if game-finished?
 				(assoc updated-game :game-over-event true)

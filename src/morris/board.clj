@@ -198,7 +198,7 @@
 		(occupied-by-current-player? current-player (origin game-state))
 		(not (location-available? origin game-state))))
 
-(defn check-for-end-game [white-pieces black-pieces game-state]
+(defn end-game? [white-pieces black-pieces game-state]
 	(let [white-piece-pool-size (count white-pieces)
 				black-piece-pool-size (count black-pieces)
 				white-pieces-on-board-count (count (filter #(str/starts-with? (val %) ":white") game-state))
