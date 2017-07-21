@@ -1,8 +1,11 @@
 (ns morris.game-test
   (:require [midje.sweet :refer :all]
+            [taoensso.timbre :as log]
             [morris.game :refer :all]
             [morris.core :as core]
             ))
+
+(log/merge-config! {:appenders nil})
 
 (fact "decomposing a move separates the origin and destination"
   (move-components "a1/a4") => {:origin :a1 :destination :a4}

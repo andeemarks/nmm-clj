@@ -1,9 +1,12 @@
 (ns morris.board-test
   (:require [midje.sweet :refer :all]
             [loom.attr :refer :all]
+            [taoensso.timbre :as log]
             [morris.core :as core]
             [morris.board :refer :all]
             ))
+
+(log/merge-config! {:appenders nil})
 
 (facts "checking for neighbours"
   (fact "returns true when the locations are immediate neighbours"
