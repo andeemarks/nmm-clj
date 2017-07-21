@@ -18,9 +18,8 @@
 
 (defn- location-to-move-component [components index]
 	(let [component (nth components index)]
-		(if component
-			(keyword (str/lower-case component))
-			nil)))
+		(when component
+			(keyword (str/lower-case component)))))
 
 (defn move-components [move]
 	(let [components (re-find (re-pattern move-re) move)

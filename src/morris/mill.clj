@@ -22,12 +22,11 @@
 			(not (board/location-available? third-node game-state)))))
 
 (defn check-for-completed-mill [mill game-state]
-	(if
+	(when
 		(and
 			(occupied-by-same-colour-pieces? mill game-state)
 			(locations-all-occupied? mill game-state))
-		(graph/nodes mill)
-		nil))
+		(graph/nodes mill)))
 
 (defn mill-contains-recent-move? [recent-move mill]
 	(graph/has-node? mill recent-move))
