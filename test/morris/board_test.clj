@@ -3,6 +3,7 @@
             [loom.attr :refer :all]
             [taoensso.timbre :as log]
             [morris.core :as core]
+            [morris.game :as game]
             [morris.piece :as piece]
             [morris.board :refer :all]
             ))
@@ -31,12 +32,12 @@
 
 (facts "board layout"
   (fact "can show an empty board"
-    (let [empty-position (attrs (layout (core/init-game)) :a1)]
+    (let [empty-position (attrs (layout (game/init-game)) :a1)]
       (:color empty-position) => "gray"))
   (fact "reflects game state on non-empty boards"
-    (let [white-piece (attrs (layout (assoc (core/init-game) :game-state {:a1 :white-1})) :a1)]
+    (let [white-piece (attrs (layout (assoc (game/init-game) :game-state {:a1 :white-1})) :a1)]
       (:fillcolor white-piece) => "white")
-    (let [black-piece (attrs (layout (assoc (core/init-game) :game-state {:d3 :black-3})) :d3)]
+    (let [black-piece (attrs (layout (assoc (game/init-game) :game-state {:d3 :black-3})) :d3)]
       (:fillcolor black-piece) => "black")))
 
 (defn- n-white-pieces [n] (take n (piece/make-white-pieces)))

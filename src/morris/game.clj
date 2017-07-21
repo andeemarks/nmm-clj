@@ -5,8 +5,16 @@
             [io.aviso.ansi :refer :all]
             [morris.board :as board]
             [morris.core :as core]
+            [morris.piece :as piece]
             [taoensso.timbre :as log]
             [taoensso.timbre.appenders.core :as appenders]))
+
+(defn init-game []
+	{:mode :piece-placement
+		:current-player "white"
+		:white-pieces (piece/make-white-pieces)
+		:black-pieces (piece/make-black-pieces)
+		:game-state nil})
 
 (defn get-input [prompt]
   (println prompt)
@@ -111,7 +119,7 @@
 (defn- init-or-load-game []
 	(if (.exists (io/as-file existing-game-config-file))
 		(reload-saved-game existing-game-config-file)
-		(core/init-game)))
+		(init-game)))
 
 (defn switch-player [game]
 	(log/debug "Switching player from " (:current-player game))
@@ -136,7 +144,7 @@
 				(:completed-mill-event game-in-progress)
 		    	(recur game-in-progress piece :piece-removal)
 				(:game-over-event game-in-progress)
-					(process-round :game-over game-in-progress nil nil)
+					(process-round :game-over game-in-progress nil)
 				(not next-piece) ; next-piece has no remaining pieces
 					(recur (switch-player game-in-progress) nil :piece-movement)
 				:else
