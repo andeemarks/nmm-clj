@@ -62,7 +62,7 @@
 	(let [piece-to-remove (get (:game-state game) location-containing-piece)]
 		(if (board/location-available? location-containing-piece (:game-state game))
 			(throw (IllegalArgumentException. (str "Location " location-containing-piece " is not occupied")))
-			(if (= (:current-player game) (piece/extract-colour piece-to-remove))
+			(if (piece/is-from-player? piece-to-remove (:current-player game))
 				(throw (IllegalArgumentException. (str (:current-player game) " cannot remove their own piece at " location-containing-piece)))
 				(let [updated-game (-> game
 														(update-in [:game-state] dissoc location-containing-piece)

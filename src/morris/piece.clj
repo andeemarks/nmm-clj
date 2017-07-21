@@ -17,3 +17,6 @@
 (defn from-same-player? [pieces]
 	(= 1 (count (set (map extract-colour (filter some? pieces))))))
 
+(defn is-from-player? [piece player]
+	(= player (extract-colour piece)))
+

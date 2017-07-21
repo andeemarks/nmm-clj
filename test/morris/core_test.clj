@@ -47,7 +47,7 @@
           game-after-removing-white-piece-pool (dissoc game-after-placing-piece-to-remove :black-pieces)
           game-after-piece-removal (remove-piece game-after-removing-white-piece-pool :a1)]
         (:game-over-event game-after-piece-removal) =not=> nil) )
-  (future-fact "is illegal if the location is part of a completed mill when other options exist")
+  (fact "is illegal if the location is part of a completed mill when other options exist")
   (fact "is illegal if the location is not occupied"
     (let [game (init-game)]
       (remove-piece game :a1) => (throws IllegalArgumentException)))

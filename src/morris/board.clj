@@ -174,7 +174,7 @@
 
 (defn occupied-by-current-player? [current-player occupant]
 	(if occupant
-		(let [result (= current-player (piece/extract-colour occupant))]
+		(let [result (piece/is-from-player? occupant current-player)]
 			(log/debug "occupied-by-current-player? of " current-player " and " occupant "=> " result)
 			result)
 		false))
