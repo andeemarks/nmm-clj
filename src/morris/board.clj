@@ -181,6 +181,16 @@
 			result)
 		false))
 
+(defn valid-placement? [move game-state]
+	(and 
+		(location-available? move game-state)
+		(location-exists? move)))
+
+(defn valid-removal? [current-player location-to-remove game-state]
+	(and
+		(not (occupied-by-current-player? current-player (location-to-remove game-state)))
+		(not (location-available? location-to-remove game-state))))
+
 (defn valid-move? [current-player game-state origin destination]
 	(and 
 		(location-exists? origin)

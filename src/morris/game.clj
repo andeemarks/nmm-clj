@@ -34,19 +34,6 @@
 (defn find-pieces [game player]
 	(keys (into '{} (filter #(str/starts-with? (name (val %)) player) (:game-state game)))))
 
-(defn valid-move? [move-components game-state]
-	(board/valid-move? game-state (:origin move-components) (:destination move-components)))
-
-(defn- valid-removal? [current-player location-to-remove game-state]
-	(and
-		(not (board/occupied-by-current-player? current-player (location-to-remove game-state)))
-		(not (board/location-available? location-to-remove game-state))))
-
-(defn- valid-placement? [move game-state]
-	(and 
-		(board/location-available? move game-state)
-		(board/location-exists? move)))
-
 (defn choose-player [game]
 	(let [current-player (:current-player game)]
 		(if (= "white" current-player)
@@ -90,15 +77,16 @@
 	(log/info "PIECE MOVEMENT for piece: " piece)
 	(let [pieces-to-move (find-pieces game (:current-player game))]
 	  (loop [move (input-for-player (:current-player game) (str " What is your move (from/to) " pieces-to-move "?"))]
-	    (if (valid-move? (move-components move) (:game-state game))
-	    	(assoc (core/move-piece game (:origin (move-components move)) (:destination (move-components move))) :mode mode)
-	      (recur 
-	      	(input-for-player (:current-player game) (str " That is not a valid move - what is your move (from/to) " pieces-to-move "?")))))))
+	  	(let [move-components (move-components move)]
+		    (if (board/valid-move? (:current-player game) (:game-state game) (:origin move-components) (:destination move-components))
+		    	(assoc (core/move-piece game (:origin move-components) (:destination move-components)) :mode mode)
+		      (recur 
+		      	(input-for-player (:current-player game) (str " That is not a valid move - what is your move (from/to) " pieces-to-move "?"))))))))
 
 (defmethod process-round :piece-placement [mode game piece]
 	(log/info "PIECE PLACEMENT for piece: " piece)
   (loop [move (input-for-piece (:current-player game) " Where do you want to place this piece?" game)]
-    (if (valid-placement? move (:game-state game))
+    (if (board/valid-placement? move (:game-state game))
     	(assoc (core/place-piece game piece move) :mode mode)
       (recur 
       	(input-for-piece (:current-player game) " That is not a valid position - where do you want to place this piece?" game)))))
@@ -106,11 +94,11 @@
 (defmethod process-round :piece-removal [mode game piece]
 	(log/info "PIECE REMOVAL by player: " (:current-player game))
 	(let [pieces-to-remove (find-pieces game (choose-player game))]
-  (loop [location-to-remove (input-for-piece (:current-player game)  (str " Mill completed! Which piece do you want to remove " pieces-to-remove "?") game)]
-    (if (valid-removal? (:current-player game) location-to-remove (:game-state game))
-    	(assoc (core/remove-piece game location-to-remove) :mode mode)
-      (recur 
-      	(input-for-piece (:current-player game) (str " That is not a valid position - which piece to remove " pieces-to-remove "?") game))))))
+	  (loop [location-to-remove (input-for-piece (:current-player game)  (str " Mill completed! Which piece do you want to remove " pieces-to-remove "?") game)]
+	    (if (board/valid-removal? (:current-player game) location-to-remove (:game-state game))
+	    	(assoc (core/remove-piece game location-to-remove) :mode mode)
+	      (recur 
+	      	(input-for-piece (:current-player game) (str " That is not a valid position - which piece to remove " pieces-to-remove "?") game))))))
 
 (defmethod process-round :game-over [mode game piece]
 	(log/info "GAME OVER for: " game)
