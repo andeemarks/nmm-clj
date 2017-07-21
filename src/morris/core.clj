@@ -1,7 +1,6 @@
 (ns morris.core
   (:require [morris.board :as board]
             [morris.mill :as mill]
-            [morris.piece :as piece]
             [taoensso.timbre :as log]))
 
 (defn remove-piece-from-pool [game piece-on-board]
