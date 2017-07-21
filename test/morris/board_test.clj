@@ -50,13 +50,15 @@
     (fact "returns true if the combination of played and pool pieces is less than three"
       (end-game? ?white-pieces ?black-pieces ?game-state) => ?expected)
       ?white-pieces       ?black-pieces       ?game-state       ?expected
-      all-white-pieces    all-black-pieces    empty-board-state false
       nil                 all-black-pieces    empty-board-state true
-      (n-white-pieces 3)  all-black-pieces    empty-board-state false
       (n-white-pieces 2)  all-black-pieces    empty-board-state true
-      (n-white-pieces 2)  all-black-pieces    {:a1 :white-1}    false
+      (n-white-pieces 1)  all-black-pieces    {:a1 :white-1}    true
       all-white-pieces    nil                 empty-board-state true
-      all-white-pieces    (n-black-pieces 3)  empty-board-state false
       all-white-pieces    (n-black-pieces 2)  empty-board-state true
+      all-white-pieces    (n-black-pieces 1)  {:a1 :black-1}    true
+      all-white-pieces    all-black-pieces    empty-board-state false
+      (n-white-pieces 3)  all-black-pieces    empty-board-state false
+      (n-white-pieces 2)  all-black-pieces    {:a1 :white-1}    false
+      all-white-pieces    (n-black-pieces 3)  empty-board-state false
       all-white-pieces    (n-black-pieces 2) {:a1 :black-1}     false
       ))
