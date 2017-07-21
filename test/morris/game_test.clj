@@ -7,15 +7,6 @@
 
 (log/merge-config! {:appenders nil})
 
-(fact "decomposing a move separates the origin and destination"
-  (move-components "a1/a4") => {:origin :a1 :destination :a4}
-  (move-components "a1") => {:origin nil :destination nil}
-  (move-components "/a1") => {:origin nil :destination nil}
-  (move-components " a1/a4 ") => {:origin :a1 :destination :a4}
-  (move-components " a1 / a4 ") => {:origin :a1 :destination :a4}
-  (move-components "A1/B4") => {:origin :a1 :destination :b4}
-  )
-
 (facts "choosing a player"
   (fact "white goes if current player is black"
     (choose-player (assoc (init-game) :current-player "black")) => "white")
