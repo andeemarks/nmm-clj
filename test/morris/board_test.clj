@@ -14,14 +14,16 @@
     (neighbour? (board) :a1 :a7) => false))
 
 (facts "checking for legal piece movement"
+  (fact "returns false if the origin is not occupied by the current player"
+    (valid-move? "black" {:a1 :white-1} :a1 :a4)  => false)
   (fact "returns false if the origin is unoccupied"
-    (valid-move? {:a1 :white-1} :a4 :a7)  => false)
+    (valid-move? "white" {:a1 :white-1} :a4 :a7)  => false)
   (fact "returns false if the destination is occupied"
-    (valid-move? {:a1 :white-1} :a1 :a1)  => false)
+    (valid-move? "white" {:a1 :white-1} :a1 :a1)  => false)
   (fact "returns false if the destination is not adjacent to the origin"
-    (valid-move? {:a1 :white-1} :a1 :b2)  => false)
+    (valid-move? "white" {:a1 :white-1} :a1 :b2)  => false)
   (fact "returns true otherwise"
-    (valid-move? {:a1 :white-1} :a1 :a4)  => true))
+    (valid-move? "white" {:a1 :white-1} :a1 :a4)  => true))
 
 (facts "board layout"
   (fact "can show an empty board"

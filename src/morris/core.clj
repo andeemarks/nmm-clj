@@ -26,7 +26,7 @@
 
 (defn move-piece [game origin destination]
 	(let [piece-to-move (origin (:game-state game))]
-		(if (board/valid-move? (:game-state game) origin destination)
+		(if (board/valid-move? (:current-player game) (:game-state game) origin destination)
 			(let [new-game (update-game-for-move game piece-to-move origin destination)
 						mill-completed? (mill/find-completed-mills (:game-state new-game) destination)]
 				(log/info "Moving " piece-to-move " from " origin " to " destination)
@@ -61,14 +61,17 @@
 		(or insufficient-white-pieces? insufficient-black-pieces?)))
 
 (defn remove-piece [game location-containing-piece]
-	(if (board/location-available? location-containing-piece (:game-state game))
-		(throw (IllegalArgumentException. (str "Location " location-containing-piece " is not occupied")))
-		(let [updated-game (-> game
-												(update-in [:game-state] dissoc location-containing-piece)
-												(dissoc :completed-mill-event))
-					game-finished? (check-for-end-game updated-game)]
-			(log/info "Removing piece from " location-containing-piece)
-			(if game-finished?
-				(assoc updated-game :game-over-event true)
-				(assoc updated-game :game-over-event nil)))
- 	))
+	(let [piece-to-remove (get (:game-state game) location-containing-piece)]
+		(if (board/location-available? location-containing-piece (:game-state game))
+			(throw (IllegalArgumentException. (str "Location " location-containing-piece " is not occupied")))
+			(if (= (:current-player game) (piece/extract-colour piece-to-remove))
+				(throw (IllegalArgumentException. (str (:current-player game) " cannot remove their own piece at " location-containing-piece)))
+				(let [updated-game (-> game
+														(update-in [:game-state] dissoc location-containing-piece)
+														(dissoc :completed-mill-event))
+							game-finished? (check-for-end-game updated-game)]
+					(log/info "Removing piece from " location-containing-piece)
+					(if game-finished?
+						(assoc updated-game :game-over-event true)
+						(assoc updated-game :game-over-event nil)))
+		 	))))

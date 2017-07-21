@@ -11,6 +11,7 @@
 	(map #(make-black-piece %) (range 1 10)))
 
 (defn extract-colour [id]
+	(assert id "No id found to extract colour from")
 	(first (str/split (name id) #"-")))
 
 (defn from-same-player? [pieces]

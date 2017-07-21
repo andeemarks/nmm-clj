@@ -8,8 +8,9 @@
 (facts "moving pieces"
   (let [game (init-game)
         after-move-1 (place-piece (init-game) (first (:white-pieces game)) :a1)]
-    (future-fact "is illegal if the origin is not for the current player"
-      (move-piece after-move-1 :a4 :a7)  => (throws IllegalStateException))
+    (fact "is illegal if the origin is not for the current player"
+      (let [after-player-switch (assoc after-move-1 :current-player "black")]
+        (move-piece after-player-switch :a1 :a4)  => (throws IllegalStateException)))
     (fact "is illegal if the origin is unoccupied"
       (move-piece after-move-1 :a4 :a7)  => (throws IllegalStateException))
     (fact "is illegal if the destination is occupied"
@@ -28,21 +29,25 @@
 (facts "removing pieces"
   (fact "changes only the game state if the location is occupied by another player"
     (let [game (init-game)
-          after-move-1 (place-piece game (first (:white-pieces game)) :a1)
+          after-move-1 (place-piece game (first (:black-pieces game)) :a1)
           stub-completed-mill (assoc after-move-1 :completed-mill-event "foo")
           updated-game (remove-piece stub-completed-mill :a1)]
         (:white-pieces updated-game) => (:white-pieces stub-completed-mill) 
         (:black-pieces updated-game) => (:black-pieces stub-completed-mill) 
         (:completed-mill-event updated-game) => nil
         (:game-state updated-game) => {} )) )
-  (future-fact "is illegal if the location is for the current player")
+  (fact "is illegal if the location is for the current player"
+    (let [game (init-game)
+          after-move-1 (place-piece game (first (:white-pieces game)) :a1)]
+          (:current-player after-move-1) => "white"
+          (remove-piece after-move-1 :a1) => (throws IllegalArgumentException)))
   (fact "will end the game if the opposition has less than three available pieces"
     (let [game (init-game)
-          game-after-placing-piece-to-remove (place-piece game (first (:white-pieces game)) :a1)
-          game-after-removing-white-piece-pool (dissoc game-after-placing-piece-to-remove :white-pieces)
+          game-after-placing-piece-to-remove (place-piece game (first (:black-pieces game)) :a1)
+          game-after-removing-white-piece-pool (dissoc game-after-placing-piece-to-remove :black-pieces)
           game-after-piece-removal (remove-piece game-after-removing-white-piece-pool :a1)]
         (:game-over-event game-after-piece-removal) =not=> nil) )
-  (future-fact "is illegal if the location is part of a completed mill")
+  (future-fact "is illegal if the location is part of a completed mill when other options exist")
   (fact "is illegal if the location is not occupied"
     (let [game (init-game)]
       (remove-piece game :a1) => (throws IllegalArgumentException)))

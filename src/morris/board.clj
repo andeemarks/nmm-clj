@@ -174,9 +174,17 @@
 		(log/debug "neighbour? of " loc1 " and " loc2 "=> " result)
 		result))
 
-(defn valid-move? [game-state origin destination]
+(defn occupied-by-current-player? [current-player occupant]
+	(if occupant
+		(let [result (= current-player (piece/extract-colour occupant))]
+			(log/debug "occupied-by-current-player? of " current-player " and " occupant "=> " result)
+			result)
+		false))
+
+(defn valid-move? [current-player game-state origin destination]
 	(and 
 		(location-exists? origin)
 		(location-available? destination game-state)
 		(neighbour? (board) origin destination)
+		(occupied-by-current-player? current-player (origin game-state))
 		(not (location-available? origin game-state))))
