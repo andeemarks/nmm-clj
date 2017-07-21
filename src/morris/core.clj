@@ -34,7 +34,7 @@
 				(handle-mill-completion-event destination))
 			(throw (IllegalArgumentException. (str "Cannot move " piece-to-move " from " origin " to " destination))))))
 
-(defn- add-piece-to-game [game destination piece] (assoc game :game-state (merge (:game-state game) {destination piece})))
+(defn- add-piece-to-game [game destination piece] (update-in game [:game-state] merge {destination piece}))
 
 (defn place-piece [game piece destination]
 	(log/info "Attempting to place " piece " on " destination)
