@@ -9,7 +9,11 @@
             [taoensso.timbre :as log]
             [taoensso.timbre.appenders.core :as appenders]))
 
+(log/merge-config! {:appenders {:spit (appenders/spit-appender {:fname "morris.log"})}})
+(log/merge-config! {:appenders {:println nil}})
+
 (defn init-game []
+	(log/info "*** New game ***")
 	{:mode :piece-placement
 		:current-player "white"
 		:white-pieces (piece/make-white-pieces)
@@ -126,12 +130,8 @@
 	(assert (:current-player game) "Game has not recorded current player")
 	(assoc game :current-player (choose-player game)))
 
-(log/merge-config! {:appenders {:spit (appenders/spit-appender {:fname "morris.log"})}})
-(log/merge-config! {:appenders {:println nil}})
-
 (defn -main [& args]
 	(println "Welcome to Nine Men's Morris!")
-	(log/info "*** New game ***")
 	(loop [	game (init-or-load-game) 
 					piece (choose-piece game) 
 					mode (:mode game)]
