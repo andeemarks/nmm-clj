@@ -2,8 +2,8 @@
 	(:require 
 		[taoensso.timbre :as log]
 		[taoensso.timbre.appenders.core :as appenders]
-		[morris.board :as board]
 		[io.aviso.ansi :refer :all]
+		[morris.board :as board]
 		[morris.core :as core]
 		[morris.piece :as piece]
 		[clojure.string :as str]

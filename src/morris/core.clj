@@ -1,9 +1,9 @@
 (ns morris.core
 	(:require 
-		[morris.board :as board]
 		[taoensso.timbre :as log]
-		[morris.mill :as mill]
 		[clojure.string :as str]
+		[morris.board :as board]
+		[morris.mill :as mill]
 		[morris.piece :as piece]
 		))
 
