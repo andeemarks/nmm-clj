@@ -37,9 +37,10 @@
 (defn valid-move? [move-components game-state]
 	(board/valid-move? game-state (:origin move-components) (:destination move-components)))
 
-(defn- valid-removal? [location-to-remove game-state]
-	(not 
-		(board/location-available? location-to-remove game-state)))
+(defn- valid-removal? [current-player location-to-remove game-state]
+	(and
+		(not (board/occupied-by-current-player? current-player (location-to-remove game-state)))
+		(not (board/location-available? location-to-remove game-state))))
 
 (defn- valid-placement? [move game-state]
 	(and 
@@ -106,7 +107,7 @@
 	(log/info "PIECE REMOVAL by player: " (:current-player game))
 	(let [pieces-to-remove (find-pieces game (choose-player game))]
   (loop [location-to-remove (input-for-piece (:current-player game)  (str " Mill completed! Which piece do you want to remove " pieces-to-remove "?") game)]
-    (if (valid-removal? location-to-remove (:game-state game))
+    (if (valid-removal? (:current-player game) location-to-remove (:game-state game))
     	(assoc (core/remove-piece game location-to-remove) :mode mode)
       (recur 
       	(input-for-piece (:current-player game) (str " That is not a valid position - which piece to remove " pieces-to-remove "?") game))))))
