@@ -1,7 +1,7 @@
-(ns morris.mill
+(ns morris.be.mill
   (:require [loom.graph :as graph]
-            [morris.board :as board]
-            [morris.piece :as piece]))
+            [morris.common.board :as board]
+            [morris.be.piece :as piece]))
 
 (defn occupied-by-same-colour-pieces? [mill game-state]
 	(let [nodes-in-mill (graph/nodes mill)

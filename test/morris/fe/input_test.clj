@@ -1,7 +1,7 @@
-(ns morris.input-test
+(ns morris.fe.input-test
   (:require [midje.sweet :refer :all]
             [taoensso.timbre :as log]
-            [morris.input :refer :all]
+            [morris.fe.input :refer :all]
             ))
 
 (log/merge-config! {:appenders nil})

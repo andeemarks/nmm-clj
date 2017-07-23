@@ -1,10 +1,10 @@
-(ns morris.board
+(ns morris.common.board
   (:require [clojure.string :as str]
             [loom.alg :refer :all]
             [loom.attr :refer :all]
             [loom.graph :refer :all]
             [loom.io :refer :all]
-            [morris.piece :as piece]
+            [morris.be.piece :as piece]
             [taoensso.timbre :as log]))
 
 (defn make-location [id] id)

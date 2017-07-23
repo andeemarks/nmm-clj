@@ -1,6 +1,6 @@
-(ns morris.piece-test
+(ns morris.be.piece-test
   (:require [midje.sweet :refer :all]
-            [morris.piece :refer :all]))
+            [morris.be.piece :refer :all]))
 
 (facts "piece-checking"
 	(fact "can tell whether a piece is white or black"

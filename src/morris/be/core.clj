@@ -1,7 +1,16 @@
-(ns morris.core
-  (:require [morris.board :as board]
-            [morris.mill :as mill]
+(ns morris.be.core
+  (:require [morris.common.board :as board]
+            [morris.be.mill :as mill]
+            [morris.be.piece :as piece]
             [taoensso.timbre :as log]))
+
+(defn init-game []
+	(log/info "*** New game ***")
+	{:mode :piece-placement
+		:current-player "white"
+		:white-pieces (piece/make-white-pieces)
+		:black-pieces (piece/make-black-pieces)
+		:game-state nil})
 
 (defn remove-piece-from-pool [game piece-on-board]
 	(-> game

@@ -1,4 +1,4 @@
-(ns morris.input
+(ns morris.fe.input
   (:require [clojure.string :as str]
             [io.aviso.ansi :refer :all]))
 

@@ -1,24 +1,15 @@
-(ns morris.game
+(ns morris.fe.game
   (:require [clojure.java.io :as io]
             [clojure.java.shell :as shell]
             [clojure.string :as str]
-            [morris.board :as board]
-            [morris.core :as core]
-            [morris.input :as input]
-            [morris.piece :as piece]
+            [morris.common.board :as board]
+            [morris.be.core :as core]
+            [morris.fe.input :as input]
             [taoensso.timbre :as log]
             [taoensso.timbre.appenders.core :as appenders]))
 
 (log/merge-config! {:appenders {:spit (appenders/spit-appender {:fname "morris.log"})}})
 (log/merge-config! {:appenders {:println nil}})
-
-(defn init-game []
-	(log/info "*** New game ***")
-	{:mode :piece-placement
-		:current-player "white"
-		:white-pieces (piece/make-white-pieces)
-		:black-pieces (piece/make-black-pieces)
-		:game-state nil})
 
 (defn find-pieces [game player]
 	(keys (into '{} (filter #(str/starts-with? (name (val %)) player) (:game-state game)))))
@@ -87,7 +78,7 @@
 (defn- init-or-load-game []
 	(if (.exists (io/as-file existing-game-config-file))
 		(reload-saved-game existing-game-config-file)
-		(init-game)))
+		(core/init-game)))
 
 (defn switch-player [game]
 	(log/debug "Switching player from " (:current-player game))
