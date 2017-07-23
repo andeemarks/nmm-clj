@@ -28,27 +28,3 @@
     (valid-move? "white" {:a1 :white-1} :a1 :b2)  => false)
   (fact "returns true otherwise"
     (valid-move? "white" {:a1 :white-1} :a1 :a4)  => true))
-
-(defn- n-white-pieces [n] (take n (piece/make-white-pieces)))
-(defn- n-black-pieces [n] (take n (piece/make-black-pieces)))
-(def all-black-pieces (n-black-pieces 10))
-(def all-white-pieces (n-white-pieces 10))
-(def empty-board-state nil)
-
-(facts "checking for end game"
-  (tabular
-    (fact "returns true if the combination of played and pool pieces is less than three"
-      (end-game? ?white-pieces ?black-pieces ?game-state) => ?expected)
-      ?white-pieces       ?black-pieces       ?game-state       ?expected
-      nil                 all-black-pieces    empty-board-state true
-      (n-white-pieces 2)  all-black-pieces    empty-board-state true
-      (n-white-pieces 1)  all-black-pieces    {:a1 :white-1}    true
-      all-white-pieces    nil                 empty-board-state true
-      all-white-pieces    (n-black-pieces 2)  empty-board-state true
-      all-white-pieces    (n-black-pieces 1)  {:a1 :black-1}    true
-      all-white-pieces    all-black-pieces    empty-board-state false
-      (n-white-pieces 3)  all-black-pieces    empty-board-state false
-      (n-white-pieces 2)  all-black-pieces    {:a1 :white-1}    false
-      all-white-pieces    (n-black-pieces 3)  empty-board-state false
-      all-white-pieces    (n-black-pieces 2) {:a1 :black-1}     false
-      ))

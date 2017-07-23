@@ -41,10 +41,10 @@
 				second-node (second nodes-in-mill)
 				third-node (last nodes-in-mill)
 				]
-		(and
-			(not (board/location-available? first-node game-state))
-			(not (board/location-available? second-node game-state))
-			(not (board/location-available? third-node game-state)))))
+		(not (or
+			(board/location-available? first-node game-state)
+			(board/location-available? second-node game-state)
+			(board/location-available? third-node game-state)))))
 
 (defn check-for-completed-mill [mill game-state]
 	(when

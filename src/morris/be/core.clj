@@ -2,6 +2,7 @@
   (:require [morris.common.board :as board]
             [morris.be.mill :as mill]
             [morris.be.piece :as piece]
+            [clojure.string :as str]
             [taoensso.timbre :as log]))
 
 (defn init-game []
@@ -28,8 +29,17 @@
 			(assoc game :completed-mill-event (first completed-mills))
 			(assoc game :completed-mill-event nil))))
 
+(defn end-game? [white-pieces black-pieces game-state]
+	(let [white-piece-pool-size (count white-pieces)
+				black-piece-pool-size (count black-pieces)
+				white-pieces-on-board-count (count (filter #(str/starts-with? (val %) ":white") game-state))
+				black-pieces-on-board-count (count (filter #(str/starts-with? (val %) ":black") game-state))
+				insufficient-white-pieces? (< (+ white-pieces-on-board-count white-piece-pool-size) 3)
+				insufficient-black-pieces? (< (+ black-pieces-on-board-count black-piece-pool-size) 3)]
+		(or insufficient-white-pieces? insufficient-black-pieces?)))
+
 (defn- handle-end-game-event [game]
-	(let [game-finished? (board/end-game? (:white-pieces game) (:black-pieces game) (:game-state game))]
+	(let [game-finished? (end-game? (:white-pieces game) (:black-pieces game) (:game-state game))]
 		(if game-finished?
 			(assoc game :game-over-event true)
 			(assoc game :game-over-event nil))))
