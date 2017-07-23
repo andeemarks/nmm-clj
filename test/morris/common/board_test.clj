@@ -29,16 +29,6 @@
   (fact "returns true otherwise"
     (valid-move? "white" {:a1 :white-1} :a1 :a4)  => true))
 
-(facts "board layout"
-  (fact "can show an empty board"
-    (let [empty-position (attrs (layout (core/init-game)) :a1)]
-      (:color empty-position) => "gray"))
-  (fact "reflects game state on non-empty boards"
-    (let [white-piece (attrs (layout (assoc (core/init-game) :game-state {:a1 :white-1})) :a1)]
-      (:fillcolor white-piece) => "white")
-    (let [black-piece (attrs (layout (assoc (core/init-game) :game-state {:d3 :black-3})) :d3)]
-      (:fillcolor black-piece) => "black")))
-
 (defn- n-white-pieces [n] (take n (piece/make-white-pieces)))
 (defn- n-black-pieces [n] (take n (piece/make-black-pieces)))
 (def all-black-pieces (n-black-pieces 10))

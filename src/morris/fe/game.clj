@@ -5,6 +5,7 @@
             [morris.common.board :as board]
             [morris.be.core :as core]
             [morris.fe.input :as input]
+            [morris.fe.output :as output]
             [taoensso.timbre :as log]
             [taoensso.timbre.appenders.core :as appenders]))
 
@@ -26,7 +27,7 @@
 		(first (:black-pieces game))))
 
 (defn- show [game]
-	(let [board-state (board/show game)]
+	(let [board-state (output/show game)]
 		(spit (str "target/game-latest.clj")   game)
 		(spit (str "target/board-latest.dot")    board-state)
 		(shell/sh "bash" "-c" "fdp target/board-latest.dot -Tsvg | display")))
