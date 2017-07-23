@@ -71,46 +71,6 @@
 			(add-attr-to-nodes :pos "3, -2!" [:d7])
 			(add-attr-to-nodes :pos "6, -2!" [:g7])))
 
-(defn add-white-pieces [board white-pieces]
-	(-> board
-			(add-nodes :white-1 :white-2 :white-3 :white-4 :white-5 :white-6 :white-7 :white-8 :white-9)
-			(add-path :white-1 :white-2 :white-3 :white-4 :white-5 :white-6 :white-7 :white-8 :white-9)
-			(add-attr-to-nodes :pos "-1,-3!" [:white-1])
-			(add-attr-to-nodes :pos "0,-3!" [:white-2])
-			(add-attr-to-nodes :pos "1,-3!" [:white-3])
-			(add-attr-to-nodes :pos "2,-3!" [:white-4])
-			(add-attr-to-nodes :pos "3,-3!" [:white-5])
-			(add-attr-to-nodes :pos "4,-3!" [:white-6])
-			(add-attr-to-nodes :pos "5,-3!" [:white-7])
-			(add-attr-to-nodes :pos "6,-3!" [:white-8])
-			(add-attr-to-nodes :pos "7,-3!" [:white-9])
-			(add-attr-to-nodes :shape "circle" white-pieces)
-			(add-attr-to-nodes :color "black" white-pieces)
-			(add-attr-to-nodes :fillcolor "white" white-pieces)
-			(add-attr-to-nodes :style "filled" white-pieces)
-			(add-attr-to-nodes :width "0.05" white-pieces)
-	))
-
-(defn add-black-pieces [board black-pieces]
-	(-> board
-			(add-nodes :black-1 :black-2 :black-3 :black-4 :black-5 :black-6 :black-7 :black-8 :black-9)
-			(add-path :black-1 :black-2 :black-3 :black-4 :black-5 :black-6 :black-7 :black-8 :black-9)
-			(add-attr-to-nodes :pos "-1,-4!" [:black-1])
-			(add-attr-to-nodes :pos "0,-4!" [:black-2])
-			(add-attr-to-nodes :pos "1,-4!" [:black-3])
-			(add-attr-to-nodes :pos "2,-4!" [:black-4])
-			(add-attr-to-nodes :pos "3,-4!" [:black-5])
-			(add-attr-to-nodes :pos "4,-4!" [:black-6])
-			(add-attr-to-nodes :pos "5,-4!" [:black-7])
-			(add-attr-to-nodes :pos "6,-4!" [:black-8])
-			(add-attr-to-nodes :pos "7,-4!" [:black-9])
-			(add-attr-to-nodes :shape "circle" black-pieces)
-			(add-attr-to-nodes :color "white" black-pieces)
-			(add-attr-to-nodes :fillcolor "black" black-pieces)
-			(add-attr-to-nodes :style "filled" black-pieces)
-			(add-attr-to-nodes :size "0.05" black-pieces)
-	))
-
 (defn hilite-completed-mill [board mill]
 	(-> board
 		(hilite-path (bf-path board (first mill) (last mill)))
@@ -127,8 +87,6 @@
 			(add-common-layout)
 			(add-position-hints)
 			(add-completed-mills (:completed-mill-event game))
-			; (add-white-pieces (:white-pieces game))
-			; (add-black-pieces (:black-pieces game))
 			(add-pieces (:game-state game))))
 
 (defn show [game]

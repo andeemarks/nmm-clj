@@ -5,8 +5,8 @@
                   [com.taoensso/timbre "4.10.0"]
                   [metosin/compojure-api "1.1.10"]
   								[aysylu/loom "1.0.0"]]
-	:main morris.api
-  :ring {:handler morris.api/app}
+	:main morris.fe.game
+  :ring {:handler morris.be.api/app}
   :profiles {:dev 
               {
                 :plugins [[lein-ring "0.10.0"]]
