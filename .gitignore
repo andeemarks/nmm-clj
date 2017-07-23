@@ -3,3 +3,5 @@
 *.sublime-workspace
 .nrepl-port
 target/
+morris.log
+ns-dep-graph.png
