@@ -16,7 +16,7 @@
     (let [empty-position (attrs (layout empty-board) :a1)]
       (:color empty-position) => "gray"))
   (fact "reflects game state on non-empty boards"
-    (let [white-piece (attrs (layout (assoc empty-board :pieces-on-board {:a1 :white-1})) :a1)]
+    (let [white-piece (attrs (layout (assoc empty-board :pieces-on-board {:a1 "white-1"})) :a1)]
       (:fillcolor white-piece) => "white")
-    (let [black-piece (attrs (layout (assoc empty-board :pieces-on-board {:d3 :black-3})) :d3)]
+    (let [black-piece (attrs (layout (assoc empty-board :pieces-on-board {:d3 "black-3"})) :d3)]
       (:fillcolor black-piece) => "black")))

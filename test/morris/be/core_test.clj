@@ -19,15 +19,15 @@
       ?white-pieces       ?black-pieces       ?pieces-on-board       ?expected
       nil                 all-black-pieces    empty-board-state true
       (n-white-pieces 2)  all-black-pieces    empty-board-state true
-      (n-white-pieces 1)  all-black-pieces    {:a1 :white-1}    true
+      (n-white-pieces 1)  all-black-pieces    {:a1 "white-1"}    true
       all-white-pieces    nil                 empty-board-state true
       all-white-pieces    (n-black-pieces 2)  empty-board-state true
-      all-white-pieces    (n-black-pieces 1)  {:a1 :black-1}    true
+      all-white-pieces    (n-black-pieces 1)  {:a1 "black-1"}    true
       all-white-pieces    all-black-pieces    empty-board-state false
       (n-white-pieces 3)  all-black-pieces    empty-board-state false
-      (n-white-pieces 2)  all-black-pieces    {:a1 :white-1}    false
+      (n-white-pieces 2)  all-black-pieces    {:a1 "white-1"}    false
       all-white-pieces    (n-black-pieces 3)  empty-board-state false
-      all-white-pieces    (n-black-pieces 2) {:a1 :black-1}     false
+      all-white-pieces    (n-black-pieces 2) {:a1 "black-1"}     false
       ))
 
 (facts "moving pieces"
@@ -44,12 +44,12 @@
       (move-piece after-move-1 :a1 :b2)  => (throws IllegalArgumentException))
     (fact "checks for mill completion"
       (let [game (init-game)
-            after-move-1 (assoc game :pieces-on-board {:a1 :white-1 :a4 :white-2 :d7 :white-3})]
+            after-move-1 (assoc game :pieces-on-board {:a1 "white-1" :a4 "white-2" :d7 "white-3"})]
         (:completed-mill-event (move-piece after-move-1 :d7 :a7)) => #{:a1 :a4 :a7}))
     (fact "returns a new game state when successful"
       (let [new-pieces-on-board (:pieces-on-board (move-piece after-move-1 :a1 :a4))]
         (:a1 new-pieces-on-board) => nil
-        (:a4 new-pieces-on-board) => :white-1) )))
+        (:a4 new-pieces-on-board) => "white-1") )))
 
 (facts "removing pieces"
   (fact "changes only the game state if the location is occupied by another player"

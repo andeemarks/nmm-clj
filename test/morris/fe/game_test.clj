@@ -15,19 +15,19 @@
 
 (facts "choosing pieces from pool"
   (fact "will start with white pieces if no none have been played"
-    (choose-piece (core/init-game)) => :white-1)
+    (choose-piece (core/init-game)) => "white-1")
   (fact "will select the player with the most pieces still to play"
-    (choose-piece (assoc (core/init-game) :black-pieces '(:black-3))) => :white-1
-    (choose-piece (assoc (core/init-game) :white-pieces '(:white-4))) => :black-1
+    (choose-piece (assoc (core/init-game) :black-pieces '("black-3"))) => "white-1"
+    (choose-piece (assoc (core/init-game) :white-pieces '("white-4"))) => "black-1"
     ))
 
 (facts "finding pieces"
   (fact "with return all pieces for the specified player from the game state"
     (find-pieces (core/init-game) "white") => nil
-    (find-pieces (assoc (core/init-game) :pieces-on-board {:a1 :white-1 :b2 :black-1}) "white") => (just [:a1])
-    (find-pieces (assoc (core/init-game) :pieces-on-board {:b2 :black-1}) "white") => nil
-    (find-pieces (assoc (core/init-game) :pieces-on-board {:b2 :black-1}) "black") => (just [:b2])
-    (find-pieces (assoc (core/init-game) :pieces-on-board {:a1 :white-1 :b2 :black-1 :f4 :white-3}) "white") => (just [:a1 :f4])
+    (find-pieces (assoc (core/init-game) :pieces-on-board {:a1 "white-1" :b2 "black-1"}) "white") => (just [:a1])
+    (find-pieces (assoc (core/init-game) :pieces-on-board {:b2 "black-1"}) "white") => nil
+    (find-pieces (assoc (core/init-game) :pieces-on-board {:b2 "black-1"}) "black") => (just [:b2])
+    (find-pieces (assoc (core/init-game) :pieces-on-board {:a1 "white-1" :b2 "black-1" :f4 "white-3"}) "white") => (just [:a1 :f4])
     ))
 
 (fact "switching players alternates between black and white"

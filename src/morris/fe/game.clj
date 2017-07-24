@@ -37,7 +37,7 @@
 
 (defmulti process-round (fn [mode game piece] mode))
 
-(defmethod process-round :piece-movement [mode game-state piece]
+(defmethod process-round "piece-movement" [mode game-state piece]
 	(log/info "PIECE MOVEMENT for piece: " piece)
 	(let [pieces-to-move (find-pieces game-state (:current-player game-state))]
 	  (loop [move (input/for-player (:current-player game-state) (str " What is your move (from/to) " pieces-to-move "?"))]
@@ -47,7 +47,7 @@
 		      (recur 
 		      	(input/for-player (:current-player game-state) (str " That is not a valid move - what is your move (from/to) " pieces-to-move "?"))))))))
 
-(defmethod process-round :piece-placement [mode game-state piece]
+(defmethod process-round "piece-placement" [mode game-state piece]
 	(log/info "PIECE PLACEMENT for piece: " piece)
   (loop [move (input/for-piece (:current-player game-state) " Where do you want to place this piece?" game-state)]
     (if (board/valid-placement? move (:pieces-on-board game-state))
@@ -55,7 +55,7 @@
       (recur 
       	(input/for-piece (:current-player game-state) " That is not a valid position - where do you want to place this piece?" game-state)))))
 
-(defmethod process-round :piece-removal [mode game-state piece]
+(defmethod process-round "piece-removal" [mode game-state piece]
 	(log/info "PIECE REMOVAL by player: " (:current-player game-state))
 	(let [pieces-to-remove (find-pieces game-state (choose-player game-state))]
 	  (loop [location-to-remove (input/for-piece (:current-player game-state)  (str " Mill completed! Which piece do you want to remove " pieces-to-remove "?") game-state)]
@@ -98,10 +98,10 @@
 			(save-game game-in-progress)
 			(cond 
 				(:completed-mill-event game-in-progress)
-		    	(recur game-in-progress piece :piece-removal)
+		    	(recur game-in-progress piece "piece-removal")
 				(:game-over-event game-in-progress)
 					(process-round :game-over game-in-progress nil)
 				(not next-piece) ; next-piece has no remaining pieces
-					(recur (switch-player game-in-progress) nil :piece-movement)
+					(recur (switch-player game-in-progress) nil "piece-movement")
 				:else
-	    		(recur (switch-player game-in-progress) next-piece :piece-placement)))))
+	    		(recur (switch-player game-in-progress) next-piece "piece-placement")))))

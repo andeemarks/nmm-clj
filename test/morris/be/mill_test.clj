@@ -8,11 +8,11 @@
     (let [game (core/init-game)]
       (empty? (find-completed-mills nil :a7)) => truthy
       (empty? (find-completed-mills {} :a7)) => truthy
-      (empty? (find-completed-mills {:a1 :white-1} :a7)) => truthy
-      (empty? (find-completed-mills {:a1 :white-1 :a4 :white-2 } :a7)) => truthy
-      (empty? (find-completed-mills {:a1 :white-1 :a4 :white-2 :a7 :black-3} :a7)) => truthy
-      (empty? (find-completed-mills {:a1 :white-1 :a4 :white-2 :a7 :white-3} :b2)) => truthy
-      (first (find-completed-mills {:a1 :white-1 :a4 :white-2 :a7 :white-3} :a7)) => #{:a1 :a4 :a7}))
+      (empty? (find-completed-mills {:a1 "white-1"} :a7)) => truthy
+      (empty? (find-completed-mills {:a1 "white-1" :a4 "white-2" } :a7)) => truthy
+      (empty? (find-completed-mills {:a1 "white-1" :a4 "white-2" :a7 "black-3"} :a7)) => truthy
+      (empty? (find-completed-mills {:a1 "white-1" :a4 "white-2" :a7 "white-3"} :b2)) => truthy
+      (first (find-completed-mills {:a1 "white-1" :a4 "white-2" :a7 "white-3"} :a7)) => #{:a1 :a4 :a7}))
   (fact "will ignore already completed mills"
     (let [game (core/init-game)]
-      (empty? (find-completed-mills {:a1 :white-1 :a4 :white-2 :a7 :white-3} :b2)) => truthy)))
+      (empty? (find-completed-mills {:a1 "white-1" :a4 "white-2" :a7 "white-3"} :b2)) => truthy)))

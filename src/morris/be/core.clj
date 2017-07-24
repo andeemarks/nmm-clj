@@ -6,7 +6,7 @@
             [clojure.string :as str]
             [taoensso.timbre :as log]))
 
-(def Piece s/Keyword)
+(def Piece String)
 (def Location s/Keyword)
 (def PiecesOnBoard {Location Piece})
 
@@ -15,7 +15,7 @@
   :white-pieces  		[Piece]
   :black-pieces  		[Piece]
   :pieces-on-board 	(s/maybe PiecesOnBoard)
-  :mode 						(s/enum :piece-removal :piece-movement :piece-placement :game-over) 
+  :mode 						(s/enum "piece-removal" "piece-movement" "piece-placement" "game-over") 
   (s/optional-key :completed-mill-event) s/Any
   (s/optional-key :game-over-event) s/Any})
 
@@ -23,7 +23,7 @@
 
 (s/defn init-game :- GameState []
 	(log/info "*** New game ***")
-	{:mode :piece-placement
+	{:mode "piece-placement"
 		:current-player "white"
 		:white-pieces (piece/make-white-pieces)
 		:black-pieces (piece/make-black-pieces)
@@ -48,8 +48,8 @@
 (s/defn end-game? :- Boolean [white-pieces black-pieces pieces-on-board :- PiecesOnBoard]
 	(let [white-piece-pool-size (count white-pieces)
 				black-piece-pool-size (count black-pieces)
-				white-pieces-on-board-count (count (filter #(str/starts-with? (val %) ":white") pieces-on-board))
-				black-pieces-on-board-count (count (filter #(str/starts-with? (val %) ":black") pieces-on-board))
+				white-pieces-on-board-count (count (filter #(str/starts-with? (val %) "white") pieces-on-board))
+				black-pieces-on-board-count (count (filter #(str/starts-with? (val %) "black") pieces-on-board))
 				insufficient-white-pieces? (< (+ white-pieces-on-board-count white-piece-pool-size) 3)
 				insufficient-black-pieces? (< (+ black-pieces-on-board-count black-piece-pool-size) 3)]
 		(or insufficient-white-pieces? insufficient-black-pieces?)))
