@@ -45,11 +45,11 @@
 			(assoc game :completed-mill-event (first completed-mills))
 			(assoc game :completed-mill-event nil))))
 
-(s/defn end-game? :- Boolean [white-pieces black-pieces game-state :- PiecesOnBoard]
+(s/defn end-game? :- Boolean [white-pieces black-pieces pieces-on-board :- PiecesOnBoard]
 	(let [white-piece-pool-size (count white-pieces)
 				black-piece-pool-size (count black-pieces)
-				white-pieces-on-board-count (count (filter #(str/starts-with? (val %) ":white") game-state))
-				black-pieces-on-board-count (count (filter #(str/starts-with? (val %) ":black") game-state))
+				white-pieces-on-board-count (count (filter #(str/starts-with? (val %) ":white") pieces-on-board))
+				black-pieces-on-board-count (count (filter #(str/starts-with? (val %) ":black") pieces-on-board))
 				insufficient-white-pieces? (< (+ white-pieces-on-board-count white-piece-pool-size) 3)
 				insufficient-black-pieces? (< (+ black-pieces-on-board-count black-piece-pool-size) 3)]
 		(or insufficient-white-pieces? insufficient-black-pieces?)))

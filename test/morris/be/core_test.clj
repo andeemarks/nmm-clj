@@ -15,8 +15,8 @@
 (facts "checking for end game"
   (tabular
     (fact "returns true if the combination of played and pool pieces is less than three"
-      (end-game? ?white-pieces ?black-pieces ?game-state) => ?expected)
-      ?white-pieces       ?black-pieces       ?game-state       ?expected
+      (end-game? ?white-pieces ?black-pieces ?pieces-on-board) => ?expected)
+      ?white-pieces       ?black-pieces       ?pieces-on-board       ?expected
       nil                 all-black-pieces    empty-board-state true
       (n-white-pieces 2)  all-black-pieces    empty-board-state true
       (n-white-pieces 1)  all-black-pieces    {:a1 :white-1}    true
@@ -47,9 +47,9 @@
             after-move-1 (assoc game :pieces-on-board {:a1 :white-1 :a4 :white-2 :d7 :white-3})]
         (:completed-mill-event (move-piece after-move-1 :d7 :a7)) => #{:a1 :a4 :a7}))
     (fact "returns a new game state when successful"
-      (let [new-game-state (:pieces-on-board (move-piece after-move-1 :a1 :a4))]
-        (:a1 new-game-state) => nil
-        (:a4 new-game-state) => :white-1) )))
+      (let [new-pieces-on-board (:pieces-on-board (move-piece after-move-1 :a1 :a4))]
+        (:a1 new-pieces-on-board) => nil
+        (:a4 new-pieces-on-board) => :white-1) )))
 
 (facts "removing pieces"
   (fact "changes only the game state if the location is occupied by another player"

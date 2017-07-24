@@ -28,35 +28,35 @@
 	(make-mill :g1 :g4 :g7)
 	])
 
-(defn occupied-by-same-colour-pieces? [mill game-state]
+(defn occupied-by-same-colour-pieces? [mill pieces-on-board]
 	(let [nodes-in-mill (graph/nodes mill)
-				first-node-piece ((first nodes-in-mill) game-state)
-				second-node-piece ((second nodes-in-mill) game-state)
-				third-node-piece ((last nodes-in-mill) game-state)]
+				first-node-piece ((first nodes-in-mill) pieces-on-board)
+				second-node-piece ((second nodes-in-mill) pieces-on-board)
+				third-node-piece ((last nodes-in-mill) pieces-on-board)]
 		(piece/from-same-player? [first-node-piece second-node-piece third-node-piece])))
 
-(defn locations-all-occupied? [mill game-state]
+(defn locations-all-occupied? [mill pieces-on-board]
 	(let [nodes-in-mill (graph/nodes mill)
 				first-node (first nodes-in-mill)
 				second-node (second nodes-in-mill)
 				third-node (last nodes-in-mill)
 				]
 		(not (or
-			(board/location-available? first-node game-state)
-			(board/location-available? second-node game-state)
-			(board/location-available? third-node game-state)))))
+			(board/location-available? first-node pieces-on-board)
+			(board/location-available? second-node pieces-on-board)
+			(board/location-available? third-node pieces-on-board)))))
 
-(defn check-for-completed-mill [mill game-state]
+(defn check-for-completed-mill [mill pieces-on-board]
 	(when
 		(and
-			(occupied-by-same-colour-pieces? mill game-state)
-			(locations-all-occupied? mill game-state))
+			(occupied-by-same-colour-pieces? mill pieces-on-board)
+			(locations-all-occupied? mill pieces-on-board))
 		(graph/nodes mill)))
 
 (defn mill-contains-recent-move? [recent-move mill]
 	(graph/has-node? mill recent-move))
 
-(defn find-completed-mills [game-state recent-move]
+(defn find-completed-mills [pieces-on-board recent-move]
 	(let [relevant-mills (filter #(mill-contains-recent-move? recent-move %) mills)
-				just-completed-mills (map #(check-for-completed-mill % game-state) relevant-mills) ]
+				just-completed-mills (map #(check-for-completed-mill % pieces-on-board) relevant-mills) ]
 		(remove nil? just-completed-mills)))

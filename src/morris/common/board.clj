@@ -22,9 +22,9 @@
 		(log/debug "location-exists? for " location "=> " result)
 		result))
 
-(defn location-available? [location game-state]
-	(let [result (nil? (location game-state))]
-		(log/debug "location-available? for " location " with " game-state "=> " result)
+(defn location-available? [location pieces-on-board]
+	(let [result (nil? (location pieces-on-board))]
+		(log/debug "location-available? for " location " with " pieces-on-board "=> " result)
 		result))
 
 (defn neighbour? [board loc1 loc2]
@@ -39,21 +39,21 @@
 			result)
 		false))
 
-(defn valid-placement? [destination game-state]
+(defn valid-placement? [destination pieces-on-board]
 	(and 
-		(location-available? destination game-state)
+		(location-available? destination pieces-on-board)
 		(location-exists? destination)))
 
-(defn valid-removal? [current-player location-to-remove game-state]
+(defn valid-removal? [current-player location-to-remove pieces-on-board]
 	(and
-		(not (occupied-by-current-player? current-player (location-to-remove game-state)))
-		(not (location-available? location-to-remove game-state))))
+		(not (occupied-by-current-player? current-player (location-to-remove pieces-on-board)))
+		(not (location-available? location-to-remove pieces-on-board))))
 
-(defn valid-move? [current-player game-state origin destination]
+(defn valid-move? [current-player pieces-on-board origin destination]
 	(and 
 		(location-exists? origin)
-		(location-available? destination game-state)
+		(location-available? destination pieces-on-board)
 		(neighbour? (board) origin destination)
-		(occupied-by-current-player? current-player (origin game-state))
-		(not (location-available? origin game-state))))
+		(occupied-by-current-player? current-player (origin pieces-on-board))
+		(not (location-available? origin pieces-on-board))))
 

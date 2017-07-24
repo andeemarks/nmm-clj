@@ -7,19 +7,19 @@
             [morris.common.board :as board]
             [taoensso.timbre :as log]))
 
-(defn add-pieces [board game-state]
-  (loop [board-with-pieces board pieces-on-board (keys game-state)]
-   	(if (nil? (first pieces-on-board))
+(defn add-pieces [board pieces-on-board]
+  (loop [board-with-pieces board pieces (keys pieces-on-board)]
+   	(if (nil? (first pieces))
       board-with-pieces
-      (let [piece-id (first pieces-on-board)
-      			piece-to-show (piece-id game-state)
+      (let [piece-id (first pieces)
+      			piece-to-show (piece-id pieces-on-board)
       			piece-colour (piece/extract-colour piece-to-show)]
 	      (recur 
 	      	(-> board-with-pieces
 	      		(add-attr piece-id :fillcolor piece-colour )
 	      		(add-attr piece-id :fontcolor "#ff0000" )
 	      		(add-attr piece-id :shape "circle" ))
-	    		(rest pieces-on-board))))))
+	    		(rest pieces))))))
 
 (defn- add-common-layout [board]
 	(let [all-nodes (nodes board)]
@@ -65,12 +65,12 @@
 			(hilite-completed-mill board completed-mill-event))
 		board))
 
-(defn layout [game]
+(defn layout [game-state]
 	(-> (board/board)
 			(add-common-layout)
 			(add-position-hints)
-			(add-completed-mills (:completed-mill-event game))
-			(add-pieces (:pieces-on-board game))))
+			(add-completed-mills (:completed-mill-event game-state))
+			(add-pieces (:pieces-on-board game-state))))
 
-(defn show [game]
-	(dot-str (layout game)))
+(defn show [game-state]
+	(dot-str (layout game-state)))
