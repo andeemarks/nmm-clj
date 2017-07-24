@@ -14,6 +14,15 @@
 ; (s/defschema Board
 ;   s/Str)
 
+(s/defschema Game {
+	:current-player	String
+  :white-pieces  	[String]
+  :black-pieces  	[String]
+  :game-state 		String
+  :mode 					String
+  (s/optional-key :completed-mill-event) String
+  (s/optional-key :game-over-event) String})
+
 (def app
   (api
     {:swagger
@@ -31,22 +40,27 @@
         :summary "Return an empty Board"
         (ok (g/dot-str (b/board))))
 
+			; (defn place-piece [game piece destination]
+      (POST "/piece/:piece/:destination" []
+        :return Game
+      	:path-params [piece :- String destination :- String]
+        :body [game Game]
+        :summary "Adds a specified piece to the board"
+        (ok game))
 
-      ; (POST "/piece" []
-      ;   :return Game
-      ;   :body [pizza Pizza]
-      ;   :summary "Adds a specified piece to the board"
-      ;   (ok pizza))
+			; (defn move-piece [game origin destination]
+      (PUT "/piece/:origin/:destination" []
+        :return Game
+      	:path-params [origin :- String destination :- String]
+        :body [game Game]
+        :summary "Moves a piece from one location to another on the board"
+        (ok game))
 
-      ; (PUT "/piece" []
-      ;   :return Board
-      ;   :body [pizza Pizza]
-      ;   :summary "Moves a piece from one location to another on the board"
-      ;   (ok pizza))
-
-      ; (DELETE "/piece" []
-      ;   :return Board
-      ;   :body [pizza Pizza]
-      ;   :summary "Removes a specified piece from the board"
-      ;   (ok pizza))
+			; (defn remove-piece [game location-containing-piece]
+      (DELETE "/piece/:location" []
+        :return Game
+      	:path-params [location :- String]
+        :body [game Game]
+        :summary "Removes a specified piece from the board"
+        (ok game))
       )))
