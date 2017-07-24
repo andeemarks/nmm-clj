@@ -9,16 +9,18 @@
 (def Piece s/Keyword)
 (def Location s/Keyword)
 (def PieceInLocation {Location Piece})
-(def GameState [PieceInLocation])
+(def GameState PieceInLocation)
 
 (s/defschema Game {
 	:current-player	(s/enum "white" "black")
   :white-pieces  	[Piece]
   :black-pieces  	[Piece]
-  :game-state 		GameState
+  :game-state 		(s/maybe GameState)
   :mode 					(s/enum :piece-removal :piece-movement :piece-placement :game-over) 
-  (s/optional-key :completed-mill-event) Boolean
-  (s/optional-key :game-over-event) Boolean})
+  (s/optional-key :completed-mill-event) s/Any
+  (s/optional-key :game-over-event) s/Any})
+
+(s/set-fn-validation! true)
 
 (s/defn init-game :- Game []
 	(log/info "*** New game ***")

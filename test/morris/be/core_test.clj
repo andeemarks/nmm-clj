@@ -10,7 +10,7 @@
 (defn- n-black-pieces [n] (take n (piece/make-black-pieces)))
 (def all-black-pieces (n-black-pieces 10))
 (def all-white-pieces (n-white-pieces 10))
-(def empty-board-state nil)
+(def empty-board-state {})
 
 (facts "checking for end game"
   (tabular
@@ -69,7 +69,7 @@
   (fact "will end the game if the opposition has less than three available pieces"
     (let [game (init-game)
           game-after-placing-piece-to-remove (place-piece game (first (:black-pieces game)) :a1)
-          game-after-removing-white-piece-pool (dissoc game-after-placing-piece-to-remove :black-pieces)
+          game-after-removing-white-piece-pool (update game-after-placing-piece-to-remove :black-pieces {})
           game-after-piece-removal (remove-piece game-after-removing-white-piece-pool :a1)]
         (:game-over-event game-after-piece-removal) =not=> nil) )
   (fact "is illegal if the location is not occupied"
