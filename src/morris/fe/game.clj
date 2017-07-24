@@ -12,60 +12,60 @@
 (log/merge-config! {:appenders {:spit (appenders/spit-appender {:fname "morris.log"})}})
 (log/merge-config! {:appenders {:println nil}})
 
-(defn find-pieces [game player]
-	(keys (into '{} (filter #(str/starts-with? (name (val %)) player) (:pieces-on-board game)))))
+(defn find-pieces [game-state player]
+	(keys (into '{} (filter #(str/starts-with? (name (val %)) player) (:pieces-on-board game-state)))))
 
-(defn choose-player [game]
-	(let [current-player (:current-player game)]
+(defn choose-player [game-state]
+	(let [current-player (:current-player game-state)]
 		(if (= "white" current-player)
 			"black"
 			"white")))
 
-(defn choose-piece [game]
-	(if (>= (count (:white-pieces game)) (count (:black-pieces game)))
-		(first (:white-pieces game))
-		(first (:black-pieces game))))
+(defn choose-piece [game-state]
+	(if (>= (count (:white-pieces game-state)) (count (:black-pieces game-state)))
+		(first (:white-pieces game-state))
+		(first (:black-pieces game-state))))
 
-(defn- show [game]
-	(let [board-state (output/show game)]
-		(spit (str "target/game-latest.clj")   game)
+(defn- show [game-state]
+	(let [board-state (output/show game-state)]
+		(spit (str "target/game-latest.clj")   game-state)
 		(spit (str "target/board-latest.dot")    board-state)
 		(shell/sh "bash" "-c" "fdp target/board-latest.dot -Tsvg | display")))
 
-(defn- save-game [game]
-	(spit (str "target/game-latest.clj")   game))
+(defn- save-game [game-state]
+	(spit (str "target/game-latest.clj")   game-state))
 
 (defmulti process-round (fn [mode game piece] mode))
 
-(defmethod process-round :piece-movement [mode game piece]
+(defmethod process-round :piece-movement [mode game-state piece]
 	(log/info "PIECE MOVEMENT for piece: " piece)
-	(let [pieces-to-move (find-pieces game (:current-player game))]
-	  (loop [move (input/for-player (:current-player game) (str " What is your move (from/to) " pieces-to-move "?"))]
+	(let [pieces-to-move (find-pieces game-state (:current-player game-state))]
+	  (loop [move (input/for-player (:current-player game-state) (str " What is your move (from/to) " pieces-to-move "?"))]
 	  	(let [move-components (input/move-components move)]
-		    (if (board/valid-move? (:current-player game) (:pieces-on-board game) (:origin move-components) (:destination move-components))
-		    	(assoc (core/move-piece game (:origin move-components) (:destination move-components)) :mode mode)
+		    (if (board/valid-move? (:current-player game-state) (:pieces-on-board game-state) (:origin move-components) (:destination move-components))
+		    	(assoc (core/move-piece game-state (:origin move-components) (:destination move-components)) :mode mode)
 		      (recur 
-		      	(input/for-player (:current-player game) (str " That is not a valid move - what is your move (from/to) " pieces-to-move "?"))))))))
+		      	(input/for-player (:current-player game-state) (str " That is not a valid move - what is your move (from/to) " pieces-to-move "?"))))))))
 
-(defmethod process-round :piece-placement [mode game piece]
+(defmethod process-round :piece-placement [mode game-state piece]
 	(log/info "PIECE PLACEMENT for piece: " piece)
-  (loop [move (input/for-piece (:current-player game) " Where do you want to place this piece?" game)]
-    (if (board/valid-placement? move (:pieces-on-board game))
-    	(assoc (core/place-piece game piece move) :mode mode)
+  (loop [move (input/for-piece (:current-player game-state) " Where do you want to place this piece?" game-state)]
+    (if (board/valid-placement? move (:pieces-on-board game-state))
+    	(assoc (core/place-piece game-state piece move) :mode mode)
       (recur 
-      	(input/for-piece (:current-player game) " That is not a valid position - where do you want to place this piece?" game)))))
+      	(input/for-piece (:current-player game-state) " That is not a valid position - where do you want to place this piece?" game-state)))))
 
-(defmethod process-round :piece-removal [mode game piece]
-	(log/info "PIECE REMOVAL by player: " (:current-player game))
-	(let [pieces-to-remove (find-pieces game (choose-player game))]
-	  (loop [location-to-remove (input/for-piece (:current-player game)  (str " Mill completed! Which piece do you want to remove " pieces-to-remove "?") game)]
-	    (if (board/valid-removal? (:current-player game) location-to-remove (:pieces-on-board game))
-	    	(assoc (core/remove-piece game location-to-remove) :mode mode)
+(defmethod process-round :piece-removal [mode game-state piece]
+	(log/info "PIECE REMOVAL by player: " (:current-player game-state))
+	(let [pieces-to-remove (find-pieces game-state (choose-player game-state))]
+	  (loop [location-to-remove (input/for-piece (:current-player game-state)  (str " Mill completed! Which piece do you want to remove " pieces-to-remove "?") game-state)]
+	    (if (board/valid-removal? (:current-player game-state) location-to-remove (:pieces-on-board game-state))
+	    	(assoc (core/remove-piece game-state location-to-remove) :mode mode)
 	      (recur 
-	      	(input/for-piece (:current-player game) (str " That is not a valid position - which piece to remove " pieces-to-remove "?") game))))))
+	      	(input/for-piece (:current-player game-state) (str " That is not a valid position - which piece to remove " pieces-to-remove "?") game-state))))))
 
-(defmethod process-round :game-over [mode game piece]
-	(log/info "GAME OVER for: " game)
+(defmethod process-round :game-over [mode game-state piece]
+	(log/info "GAME OVER for: " game-state)
 	(println "Game over!"))
 
 (def ^:const existing-game-config-file "resources/save-state.clj")
@@ -81,19 +81,19 @@
 		(reload-saved-game existing-game-config-file)
 		(core/init-game)))
 
-(defn switch-player [game]
-	(log/debug "Switching player from " (:current-player game))
-	(assert (:current-player game) "Game has not recorded current player")
-	(assoc game :current-player (choose-player game)))
+(defn switch-player [game-state]
+	(log/debug "Switching player from " (:current-player game-state))
+	(assert (:current-player game-state) "Game has not recorded current player")
+	(assoc game-state :current-player (choose-player game-state)))
 
 (defn -main [& args]
 	(println "Welcome to Nine Men's Morris!")
-	(loop [	game (init-or-load-game) 
-					piece (choose-piece game) 
-					mode (:mode game)]
-		(show game)
-		(log/info "Current piece: " piece " for player: " (:current-player game))
-		(let [game-in-progress (process-round mode game piece)
+	(loop [	game-state (init-or-load-game) 
+					piece (choose-piece game-state) 
+					mode (:mode game-state)]
+		(show game-state)
+		(log/info "Current piece: " piece " for player: " (:current-player game-state))
+		(let [game-in-progress (process-round mode game-state piece)
 					next-piece (choose-piece game-in-progress)]
 			(save-game game-in-progress)
 			(cond 

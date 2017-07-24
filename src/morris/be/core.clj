@@ -29,21 +29,21 @@
 		:black-pieces (piece/make-black-pieces)
 		:pieces-on-board nil})
 
-(s/defn remove-piece-from-pool :- GameState [game :- GameState piece-on-board :- Piece]
-	(-> game
-		(assoc :white-pieces (remove #(= piece-on-board %) (:white-pieces game)))
-		(assoc :black-pieces (remove #(= piece-on-board %) (:black-pieces game)))))
+(s/defn remove-piece-from-pool :- GameState [game-state :- GameState piece-on-board :- Piece]
+	(-> game-state
+		(assoc :white-pieces (remove #(= piece-on-board %) (:white-pieces game-state)))
+		(assoc :black-pieces (remove #(= piece-on-board %) (:black-pieces game-state)))))
 
-(s/defn update-game-for-move :- GameState [game :- GameState piece-to-move :- Piece origin :- Location destination :- Location]
-	(-> game
+(s/defn update-game-for-move :- GameState [game-state :- GameState piece-to-move :- Piece origin :- Location destination :- Location]
+	(-> game-state
 		(assoc-in [:pieces-on-board destination] piece-to-move)
 		(update-in [:pieces-on-board] dissoc origin)))
 
-(s/defn handle-mill-completion-event :- GameState [game :- GameState destination :- Location]
-	(let [completed-mills (mill/find-completed-mills (:pieces-on-board game) destination)]
+(s/defn handle-mill-completion-event :- GameState [game-state :- GameState destination :- Location]
+	(let [completed-mills (mill/find-completed-mills (:pieces-on-board game-state) destination)]
 		(if completed-mills
-			(assoc game :completed-mill-event (first completed-mills))
-			(assoc game :completed-mill-event nil))))
+			(assoc game-state :completed-mill-event (first completed-mills))
+			(assoc game-state :completed-mill-event nil))))
 
 (s/defn end-game? :- Boolean [white-pieces black-pieces pieces-on-board :- PiecesOnBoard]
 	(let [white-piece-pool-size (count white-pieces)
@@ -54,40 +54,40 @@
 				insufficient-black-pieces? (< (+ black-pieces-on-board-count black-piece-pool-size) 3)]
 		(or insufficient-white-pieces? insufficient-black-pieces?)))
 
-(s/defn handle-end-game-event :- GameState [game :- GameState]
-	(let [game-finished? (end-game? (:white-pieces game) (:black-pieces game) (:pieces-on-board game))]
+(s/defn handle-end-game-event :- GameState [game-state :- GameState]
+	(let [game-finished? (end-game? (:white-pieces game-state) (:black-pieces game-state) (:pieces-on-board game-state))]
 		(if game-finished?
-			(assoc game :game-over-event true)
-			(assoc game :game-over-event nil))))
+			(assoc game-state :game-over-event true)
+			(assoc game-state :game-over-event nil))))
 
-(s/defn move-piece :- GameState [game :- GameState origin :- Location destination :- Location]
-	(let [piece-to-move (origin (:pieces-on-board game))]
+(s/defn move-piece :- GameState [game-state :- GameState origin :- Location destination :- Location]
+	(let [piece-to-move (origin (:pieces-on-board game-state))]
 		(log/info "Moving " piece-to-move " from " origin " to " destination)
-		(if (board/valid-move? (:current-player game) (:pieces-on-board game) origin destination)
-			(-> game
+		(if (board/valid-move? (:current-player game-state) (:pieces-on-board game-state) origin destination)
+			(-> game-state
 				(update-game-for-move piece-to-move origin destination)
 				(handle-mill-completion-event destination))
 			(throw (IllegalArgumentException. (str "Cannot move " piece-to-move " from " origin " to " destination))))))
 
-(defn- add-piece-to-game [game destination piece] (update-in game [:pieces-on-board] merge {destination piece}))
+(defn- add-piece-to-game [game-state destination piece] (update-in game-state [:pieces-on-board] merge {destination piece}))
 
-(s/defn place-piece :- GameState [game :- GameState piece :- Piece destination :- Location]
+(s/defn place-piece :- GameState [game-state :- GameState piece :- Piece destination :- Location]
 	(log/info "Attempting to place " piece " on " destination)
-	(if (board/valid-placement? destination (:pieces-on-board game))				
-		(-> game 
+	(if (board/valid-placement? destination (:pieces-on-board game-state))				
+		(-> game-state 
 			(add-piece-to-game destination piece)
 			(remove-piece-from-pool piece)
 			(handle-mill-completion-event destination))
 		(throw (IllegalArgumentException. (str "Piece " piece " cannot be placed on location " destination)))))
 
-(defn- remove-piece-from-game [game piece] (update-in game [:pieces-on-board] dissoc piece))
-(defn- clear-events [game] (dissoc game :completed-mill-event))
+(defn- remove-piece-from-game [game-state piece] (update-in game-state [:pieces-on-board] dissoc piece))
+(defn- clear-events [game-state] (dissoc game-state :completed-mill-event))
 
-(s/defn remove-piece :- GameState [game :- GameState location-containing-piece :- Location]
+(s/defn remove-piece :- GameState [game-state :- GameState location-containing-piece :- Location]
 	(log/info "Attempting to remove piece from " location-containing-piece)
-	(if (board/valid-removal? (:current-player game) location-containing-piece (:pieces-on-board game))
-		(-> game
+	(if (board/valid-removal? (:current-player game-state) location-containing-piece (:pieces-on-board game-state))
+		(-> game-state
 			(remove-piece-from-game location-containing-piece)
 			(clear-events)
 			(handle-end-game-event))
-		(throw (IllegalArgumentException. (str "Location " location-containing-piece " cannot be removed by " (:current-player game))))))
+		(throw (IllegalArgumentException. (str "Location " location-containing-piece " cannot be removed by " (:current-player game-state))))))

@@ -21,19 +21,19 @@
 				destination (location-to-move-component components 2)]
 		{:origin origin :destination destination}))
 
-(defn- piece-label [player game]
+(defn- piece-label [player game-state]
 	(assert player "Attempting to build label for nil player!!!")
 	(let [piece-colour-code (ns-resolve 'io.aviso.ansi (symbol (str player "-bg")))
-				white-piece-pool-size (count (:white-pieces game))
-				black-piece-pool-size (count (:black-pieces game))]
+				white-piece-pool-size (count (:white-pieces game-state))
+				black-piece-pool-size (count (:black-pieces game-state))]
 		(piece-colour-code (str bold-red-font " [" player "] " white-piece-pool-size "/white " black-piece-pool-size "/black remaining " reset-font))))
 
 (defn- player-label [player]
 	(let [piece-colour-code (ns-resolve 'io.aviso.ansi (symbol (str player "-bg")))]
 		(piece-colour-code (str bold-red-font " [" player "] " reset-font))))
 
-(defn for-piece [player prompt game]
-	(keyword (get-input (str (piece-label player game) prompt))))
+(defn for-piece [player prompt game-state]
+	(keyword (get-input (str (piece-label player game-state) prompt))))
 
 (defn for-player [player prompt]
 	(get-input (str (player-label player) prompt)))
