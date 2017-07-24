@@ -70,7 +70,7 @@
 			(add-common-layout)
 			(add-position-hints)
 			(add-completed-mills (:completed-mill-event game))
-			(add-pieces (:game-state game))))
+			(add-pieces (:pieces-on-board game))))
 
 (defn show [game]
 	(dot-str (layout game)))

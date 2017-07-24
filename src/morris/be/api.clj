@@ -22,7 +22,7 @@
 	:current-player	(s/enum "white" "black")
   :white-pieces  	[Piece]
   :black-pieces  	[Piece]
-  :game-state 		[PieceInLocation]
+  :pieces-on-board 		[PieceInLocation]
   :mode 					(s/enum :piece-removal :piece-movement :piece-placement :game-over) 
   (s/optional-key :completed-mill-event) Boolean
   (s/optional-key :game-over-event) Boolean})

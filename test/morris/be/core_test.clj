@@ -44,10 +44,10 @@
       (move-piece after-move-1 :a1 :b2)  => (throws IllegalArgumentException))
     (fact "checks for mill completion"
       (let [game (init-game)
-            after-move-1 (assoc game :game-state {:a1 :white-1 :a4 :white-2 :d7 :white-3})]
+            after-move-1 (assoc game :pieces-on-board {:a1 :white-1 :a4 :white-2 :d7 :white-3})]
         (:completed-mill-event (move-piece after-move-1 :d7 :a7)) => #{:a1 :a4 :a7}))
     (fact "returns a new game state when successful"
-      (let [new-game-state (:game-state (move-piece after-move-1 :a1 :a4))]
+      (let [new-game-state (:pieces-on-board (move-piece after-move-1 :a1 :a4))]
         (:a1 new-game-state) => nil
         (:a4 new-game-state) => :white-1) )))
 
@@ -60,7 +60,7 @@
         (:white-pieces updated-game) => (:white-pieces stub-completed-mill) 
         (:black-pieces updated-game) => (:black-pieces stub-completed-mill) 
         (:completed-mill-event updated-game) => nil
-        (:game-state updated-game) => {} )) )
+        (:pieces-on-board updated-game) => {} )) )
   (fact "is illegal if the location is for the current player"
     (let [game (init-game)
           after-move-1 (place-piece game (first (:white-pieces game)) :a1)]
@@ -100,7 +100,7 @@
        (:white-pieces updated-game) =not=> nil
        (:black-pieces updated-game) =not=> nil
        (:current-player updated-game) =not=> nil
-       (:game-state updated-game) =not=> nil
+       (:pieces-on-board updated-game) =not=> nil
        ))
   (fact "reduces the number of pieces of the corresponding player"
     (let [game (init-game)

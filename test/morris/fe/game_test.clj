@@ -24,10 +24,10 @@
 (facts "finding pieces"
   (fact "with return all pieces for the specified player from the game state"
     (find-pieces (core/init-game) "white") => nil
-    (find-pieces (assoc (core/init-game) :game-state {:a1 :white-1 :b2 :black-1}) "white") => (just [:a1])
-    (find-pieces (assoc (core/init-game) :game-state {:b2 :black-1}) "white") => nil
-    (find-pieces (assoc (core/init-game) :game-state {:b2 :black-1}) "black") => (just [:b2])
-    (find-pieces (assoc (core/init-game) :game-state {:a1 :white-1 :b2 :black-1 :f4 :white-3}) "white") => (just [:a1 :f4])
+    (find-pieces (assoc (core/init-game) :pieces-on-board {:a1 :white-1 :b2 :black-1}) "white") => (just [:a1])
+    (find-pieces (assoc (core/init-game) :pieces-on-board {:b2 :black-1}) "white") => nil
+    (find-pieces (assoc (core/init-game) :pieces-on-board {:b2 :black-1}) "black") => (just [:b2])
+    (find-pieces (assoc (core/init-game) :pieces-on-board {:a1 :white-1 :b2 :black-1 :f4 :white-3}) "white") => (just [:a1 :f4])
     ))
 
 (fact "switching players alternates between black and white"
