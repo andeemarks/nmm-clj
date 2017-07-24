@@ -1,6 +1,7 @@
 (ns morris.be.api
 	(:require [compojure.api.sweet :refer :all]
-						[morris.common.board :as b]
+            [morris.common.board :as b]
+						[morris.be.core :as core]
 						[schema.core :as s]
             [loom.io :as g]
 						[clojure.data.json :as json]
@@ -13,19 +14,6 @@
 
 ; (s/defschema Board
 ;   s/Str)
-
-(def Piece s/Keyword)
-(def Location s/Keyword)
-(def PieceInLocation {Location Piece})
-
-(s/defschema Game {
-	:current-player	(s/enum "white" "black")
-  :white-pieces  	[Piece]
-  :black-pieces  	[Piece]
-  :pieces-on-board 		[PieceInLocation]
-  :mode 					(s/enum :piece-removal :piece-movement :piece-placement :game-over) 
-  (s/optional-key :completed-mill-event) Boolean
-  (s/optional-key :game-over-event) Boolean})
 
 (def app
   (api
@@ -46,25 +34,25 @@
 
 			; (defn place-piece [game piece destination]
       (POST "/piece/:piece/:destination" []
-        :return Game
-      	:path-params [piece :- Piece destination :- Location]
-        :body [game Game]
+        :return core/GameState
+      	:path-params [piece :- core/Piece destination :- core/Location]
+        :body [game core/GameState]
         :summary "Adds a specified piece to the board"
         (ok game))
 
 			; (defn move-piece [game origin destination]
       (PUT "/piece/:origin/:destination" []
-        :return Game
-      	:path-params [origin :- Piece destination :- Location]
-        :body [game Game]
+        :return core/GameState
+      	:path-params [origin :- core/Piece destination :- core/Location]
+        :body [game core/GameState]
         :summary "Moves a piece from one location to another on the board"
         (ok game))
 
 			; (defn remove-piece [game location-containing-piece]
       (DELETE "/piece/:location" []
-        :return Game
-      	:path-params [location :- Location]
-        :body [game Game]
+        :return core/GameState
+      	:path-params [location :- core/Location]
+        :body [game core/GameState]
         :summary "Removes a specified piece from the board"
         (ok game))
       )))
