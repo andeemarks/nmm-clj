@@ -10,7 +10,7 @@
   :profiles {:dev 
               {
                 :plugins [[lein-ring "0.10.0"]]
-                :dependencies [[midje "1.8.3"]]}
+                :dependencies [[ring/ring-mock "0.3.1"] [midje "1.8.3"]]}
                 :midje {}})
 
   

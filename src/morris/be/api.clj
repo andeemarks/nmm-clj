@@ -7,14 +7,6 @@
 						[clojure.data.json :as json]
 						[ring.util.http-response :refer :all]))
 
-; (defapi app
-;   (GET "/hello" []
-;     :query-params [name :- String]
-;     (ok {:message (str "Hello, " name)})))
-
-; (s/defschema Board
-;   s/Str)
-
 (def app
   (api
     {:swagger
@@ -38,7 +30,7 @@
       	:path-params [piece :- core/Piece destination :- core/Location]
         :body [game core/GameState]
         :summary "Adds a specified piece to the board"
-        (ok game))
+        (ok (core/init-game)))
 
 			; (defn move-piece [game origin destination]
       (PUT "/piece/:origin/:destination" []

@@ -27,7 +27,7 @@
 		:current-player "white"
 		:white-pieces (piece/make-white-pieces)
 		:black-pieces (piece/make-black-pieces)
-		:pieces-on-board nil})
+		:pieces-on-board '{}})
 
 (s/defn remove-piece-from-pool :- GameState [game-state :- GameState piece-on-board :- Piece]
 	(-> game-state
