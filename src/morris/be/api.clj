@@ -46,5 +46,5 @@
       	:path-params [location :- core/Location]
         :body [game core/GameState]
         :summary "Removes a specified piece from the board"
-        (ok game))
+        (ok (core/remove-piece game location)))
       )))

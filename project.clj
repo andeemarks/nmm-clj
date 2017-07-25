@@ -1,5 +1,6 @@
 (defproject morris "0.0.1-SNAPSHOT"
   :description "Cool new project to do things and stuff"
+  :plugins [[io.aviso/pretty "0.1.34"]]
   :dependencies [	[org.clojure/clojure "1.8.0"]
                   [io.aviso/pretty "0.1.34"]
                   [com.taoensso/timbre "4.10.0"]
