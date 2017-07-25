@@ -24,7 +24,6 @@
         :summary "Return an empty Board"
         (ok (g/dot-str (b/board))))
 
-			; (defn place-piece [game piece destination]
       (POST "/piece/:piece/:destination" []
         :return core/GameState
       	:path-params [piece :- core/Piece destination :- core/Location]
@@ -32,7 +31,6 @@
         :summary "Adds a specified piece to the board"
         (ok (core/place-piece game piece destination)))
 
-			; (defn move-piece [game origin destination]
       (PUT "/piece/:origin/:destination" []
         :return core/GameState
       	:path-params [origin :- core/Location destination :- core/Location]
@@ -40,7 +38,6 @@
         :summary "Moves a piece from one location to another on the board"
         (ok (core/move-piece game origin destination)))
 
-			; (defn remove-piece [game location-containing-piece]
       (DELETE "/piece/:location" []
         :return core/GameState
       	:path-params [location :- core/Location]

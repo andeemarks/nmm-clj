@@ -3,6 +3,7 @@
             [clojure.java.shell :as shell]
             [clojure.string :as str]
             [morris.common.board :as board]
+            [morris.fe.api :as api]
             [morris.be.core :as core]
             [morris.fe.input :as input]
             [morris.fe.output :as output]
@@ -43,7 +44,7 @@
 	  (loop [move (input/for-player (:current-player game-state) (str " What is your move (from/to) " pieces-to-move "?"))]
 	  	(let [move-components (input/move-components move)]
 		    (if (board/valid-move? (:current-player game-state) (:pieces-on-board game-state) (:origin move-components) (:destination move-components))
-		    	(assoc (core/move-piece game-state (:origin move-components) (:destination move-components)) :mode mode)
+		    	(assoc (api/move-piece game-state (:origin move-components) (:destination move-components)) :mode mode)
 		      (recur 
 		      	(input/for-player (:current-player game-state) (str " That is not a valid move - what is your move (from/to) " pieces-to-move "?"))))))))
 
@@ -51,7 +52,7 @@
 	(log/info "PIECE PLACEMENT for piece: " piece)
   (loop [move (input/for-piece (:current-player game-state) " Where do you want to place this piece?" game-state)]
     (if (board/valid-placement? move (:pieces-on-board game-state))
-    	(assoc (core/place-piece game-state piece move) :mode mode)
+    	(assoc (api/place-piece game-state piece move) :mode mode)
       (recur 
       	(input/for-piece (:current-player game-state) " That is not a valid position - where do you want to place this piece?" game-state)))))
 
@@ -60,7 +61,7 @@
 	(let [pieces-to-remove (find-pieces game-state (choose-player game-state))]
 	  (loop [location-to-remove (input/for-piece (:current-player game-state)  (str " Mill completed! Which piece do you want to remove " pieces-to-remove "?") game-state)]
 	    (if (board/valid-removal? (:current-player game-state) location-to-remove (:pieces-on-board game-state))
-	    	(assoc (core/remove-piece game-state location-to-remove) :mode mode)
+	    	(assoc (api/remove-piece game-state location-to-remove) :mode mode)
 	      (recur 
 	      	(input/for-piece (:current-player game-state) (str " That is not a valid position - which piece to remove " pieces-to-remove "?") game-state))))))
 
