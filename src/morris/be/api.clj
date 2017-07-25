@@ -30,7 +30,7 @@
       	:path-params [piece :- core/Piece destination :- core/Location]
         :body [game core/GameState]
         :summary "Adds a specified piece to the board"
-        (ok (core/init-game)))
+        (ok (core/place-piece game piece destination)))
 
 			; (defn move-piece [game origin destination]
       (PUT "/piece/:origin/:destination" []
