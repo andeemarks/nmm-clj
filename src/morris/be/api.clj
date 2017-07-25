@@ -35,10 +35,10 @@
 			; (defn move-piece [game origin destination]
       (PUT "/piece/:origin/:destination" []
         :return core/GameState
-      	:path-params [origin :- core/Piece destination :- core/Location]
+      	:path-params [origin :- core/Location destination :- core/Location]
         :body [game core/GameState]
         :summary "Moves a piece from one location to another on the board"
-        (ok game))
+        (ok (core/move-piece game origin destination)))
 
 			; (defn remove-piece [game location-containing-piece]
       (DELETE "/piece/:location" []

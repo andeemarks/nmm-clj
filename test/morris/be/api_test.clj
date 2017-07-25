@@ -30,3 +30,12 @@
         body     (parse-body (:body response))]
     (:status response) => 200
     (:a1 (:pieces-on-board body)) => nil))
+
+(fact "Test moving a piece returns a game-state containing the piece in thw new position"
+  (let [game-state-as-json (cheshire/generate-string (assoc new-game :pieces-on-board {:a1 "white-1"}))
+        response (app (-> (mock/request :put "/game/piece/a1/a4")
+                          (mock/content-type "application/json")
+                          (mock/body game-state-as-json)))
+        body     (parse-body (:body response))]
+    (:status response) => 200
+    (:a4 (:pieces-on-board body)) => "white-1"))
