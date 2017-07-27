@@ -23,9 +23,8 @@
 				options (build-options body)
 				{:keys [status headers body error] :as resp} @(http/put url options)]
 	  (if error
-	    (log/error "Failed, exception: " error)
-	    (log/info "API place-piece success: " status))
-	  (parse-body (:body resp))))
+	  	(throw (Exception. error))
+		  (parse-body (:body resp)))))
 
 (defn place-piece [game-state piece destination]
 	(let [url (str "http://localhost:3000/game/piece/" piece "/" destination)
@@ -33,9 +32,8 @@
 				options (build-options body)
 				{:keys [status headers body error] :as resp} @(http/post url options)]
 	  (if error
-	    (log/error "Failed, exception: " error)
-	    (log/info "API place-piece success: " status))
-	  (parse-body (:body resp))))
+	  	(throw (Exception. error))
+		  (parse-body (:body resp)))))
 
 (defn remove-piece [game-state location]
 	(let [url (str "http://localhost:3000/game/piece/" location)
@@ -43,6 +41,5 @@
 				options (build-options body)
 				{:keys [status headers body error] :as resp} @(http/delete url options)]
 	  (if error
-	    (log/error "Failed, exception: " error)
-	    (log/info "API place-piece success: " status))
-	  (parse-body (:body resp))))
+	  	(throw (Exception. error))
+		  (parse-body (:body resp)))))
