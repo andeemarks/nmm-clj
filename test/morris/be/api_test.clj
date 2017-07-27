@@ -8,7 +8,7 @@
 
 (log/set-config! {[:appenders :standard-out :enabled?] true})
 
-(defn parse-body [body]
+(defn- parse-body [body]
   (cheshire/parse-string (slurp body) true))
 
 (def ^:const new-game (core/init-game))

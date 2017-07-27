@@ -11,9 +11,11 @@
 
 (facts "calling the api"
   (fact "place piece succeeds"
-    (:status (place-piece new-game "white-1" "a1")) => 200)
+    (:a1 (:pieces-on-board (place-piece new-game "white-1" "a1"))) => "white-1")
   (fact "move piece succeeds"
-    (:status (move-piece (assoc new-game :pieces-on-board {:a1 "white-1"}) "a1" "a4")) => 200)
+    (:a4 (:pieces-on-board (move-piece (assoc new-game :pieces-on-board {:a1 "white-1"}) "a1" "a4"))) => "white-1")
   (fact "remove piece succeeds"
-    (:status (remove-piece (assoc new-game :pieces-on-board {:a1 "black-1"}) "a1")) => 200)
+    (let [pieces-on-board (:pieces-on-board (remove-piece (assoc new-game :pieces-on-board {:a1 "black-1"}) "a1"))]
+      pieces-on-board =not=> nil
+      (:a1 pieces-on-board) => nil))
   )
