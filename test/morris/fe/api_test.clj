@@ -11,7 +11,12 @@
 
 (facts "calling the api"
   (fact "place piece succeeds"
-    (let [api-response (place-piece new-game "white-1" "a1")
-      _ (println api-response)]
-      (:status api-response) => 200)
-  ))
+    (let [api-response (place-piece new-game "white-1" "a1")]
+      (:status api-response) => 200))
+  (fact "move piece succeeds"
+    (let [api-response (move-piece (assoc new-game :pieces-on-board {:a1 "white-1"}) "a1" "a4")]
+      (:status api-response) => 200))
+  (fact "remove piece succeeds"
+    (let [api-response (remove-piece (assoc new-game :pieces-on-board {:a1 "black-1"}) "a1")]
+      (:status api-response) => 200))
+  )
