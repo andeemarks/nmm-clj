@@ -4,9 +4,10 @@
   :dependencies [	[org.clojure/clojure "1.8.0"]
                   [io.aviso/pretty "0.1.34"]
                   [com.taoensso/timbre "4.10.0"]
+                  [ring-logger-timbre "0.7.5"]
                   [metosin/compojure-api "1.1.10"]
-                  [clj-http "3.6.1"]
-  								[aysylu/loom "1.0.0"]]
+                  [http-kit "2.2.0"]
+   								[aysylu/loom "1.0.0"]]
 	:main morris.fe.game
   :ring {:handler morris.be.api/app}
   :profiles {:dev 

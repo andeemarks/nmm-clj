@@ -5,6 +5,7 @@
 						[schema.core :as s]
             [loom.io :as g]
 						[clojure.data.json :as json]
+            [ring.logger.timbre :as log]
 						[ring.util.http-response :refer :all]))
 
 (def app
@@ -17,6 +18,7 @@
              :tags [{:name "morris", :description "some apis"}]}}}
 
     (context "/game" []
+      :middleware [log/wrap-with-logger]
       :tags ["api"]
 
       (GET "/board" []
