@@ -10,6 +10,9 @@
    								[aysylu/loom "1.0.0"]]
 	:main morris.fe.game
   :ring {:handler morris.be.api/app}
+  :aliases {"itest" ["midje" ":filters" "integration"]
+            "utest" ["midje" ":filters" "-integration"]
+            "test"  ["midje"]}
   :profiles {:dev 
               {
                 :plugins [[lein-ring "0.10.0"]]
