@@ -13,6 +13,7 @@
   :aliases {"itest" ["midje" ":filters" "integration"]
             "utest" ["midje" ":filters" "-integration"]
             "test"  ["midje"]}
+  :test-paths ["test/unit" "test/integration"]
   :profiles {:dev 
               {
                 :plugins [[lein-ring "0.10.0"]]
