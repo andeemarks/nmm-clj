@@ -12,7 +12,7 @@
   :ring {:handler morris.be.api/app}
   :aliases {"itest" ["midje" ":filters" "integration"]
             "utest" ["midje" ":filters" "-integration"]
-            "test"  ["midje"]}
+            "ci"    ["test"]}
   :test-paths ["test/unit" "test/integration"]
   :profiles {:dev 
               {
