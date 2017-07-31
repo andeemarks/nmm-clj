@@ -18,7 +18,7 @@
 		:timeout 2000})
 
 (defn move-piece [game-state origin destination]
-	(let [url (str "http://localhost:3000/game/piece/" origin "/" destination)
+	(let [url (str "http://localhost:3000/game/piece/" (name origin) "/" (name destination))
 				body (cheshire/generate-string game-state)
 				options (build-options body)
 				{:keys [status headers body error] :as resp} @(http/put url options)]
@@ -27,7 +27,7 @@
 		  (parse-body (:body resp)))))
 
 (defn place-piece [game-state piece destination]
-	(let [url (str "http://localhost:3000/game/piece/" piece "/" destination)
+	(let [url (str "http://localhost:3000/game/piece/" piece "/" (name destination))
 				body (cheshire/generate-string game-state)
 				options (build-options body)
 				{:keys [status headers body error] :as resp} @(http/post url options)]
@@ -36,7 +36,7 @@
 		  (parse-body (:body resp)))))
 
 (defn remove-piece [game-state location]
-	(let [url (str "http://localhost:3000/game/piece/" location)
+	(let [url (str "http://localhost:3000/game/piece/" (name location))
 				body (cheshire/generate-string game-state)
 				options (build-options body)
 				{:keys [status headers body error] :as resp} @(http/delete url options)]
