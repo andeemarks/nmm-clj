@@ -37,3 +37,6 @@
 
 (defn for-player [player prompt]
 	(get-input (str (player-label player) prompt)))
+
+(defn for-player-move [player prompt]
+	(move-components (for-player player prompt)))
