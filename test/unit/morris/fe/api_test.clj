@@ -12,6 +12,8 @@
 
 (faker/with-fake-http []    
   (facts "when the API calls fail"
+    (fact "init game throws an exception"
+      (init-game) => (throws Exception))
     (fact "place piece throws an exception"
       (place-piece new-game "white-1" "a1") => (throws Exception))
     (fact "move piece throws an exception"

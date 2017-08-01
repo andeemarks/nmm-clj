@@ -17,6 +17,14 @@
 		:headers {"Content-Type" "application/json" "Accept" "application/json"}
 		:timeout 2000})
 
+(defn init-game []
+	(let [url "http://localhost:3000/game/state"
+				options (build-options nil)
+				{:keys [status headers body error] :as resp} @(http/get url options)]
+	  (if error
+	  	(throw (Exception. error))
+		  (parse-body (:body resp)))))
+
 (defn move-piece [game-state origin destination]
 	(let [url (str "http://localhost:3000/game/piece/" (name origin) "/" (name destination))
 				body (cheshire/generate-string game-state)

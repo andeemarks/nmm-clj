@@ -9,7 +9,15 @@
 
 (def ^:const new-game (core/init-game))
 
-(facts "when the API calls are successful" :integration
+(facts :integration "when the API calls are successful" 
+  (fact "init-game succeeds"
+    (let [game-state (init-game)]
+      (:current-player (init-game)) =not=> nil
+      (:white-pieces (init-game)) =not=> nil
+      (:black-pieces (init-game)) =not=> nil
+      (:pieces-on-board (init-game)) =not=> nil
+      (:mode (init-game)) =not=> nil)
+    )
   (fact "place piece succeeds"
     (:a1 (:pieces-on-board (place-piece new-game "white-1" "a1"))) => "white-1")
   (fact "move piece succeeds"

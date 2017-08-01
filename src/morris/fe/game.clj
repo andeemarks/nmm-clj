@@ -4,7 +4,6 @@
             [clojure.string :as str]
             [morris.common.board :as board]
             [morris.fe.api :as api]
-            [morris.be.core :as core]
             [morris.fe.input :as input]
             [morris.fe.output :as output]
             [taoensso.timbre :as log]
@@ -76,7 +75,7 @@
 (defn- init-or-load-game []
 	(if (.exists (io/as-file existing-game-config-file))
 		(reload-saved-game existing-game-config-file)
-		(core/init-game)))
+		(api/init-game)))
 
 (defn switch-player [game-state]
 	(log/debug "Switching player from " (:current-player game-state))

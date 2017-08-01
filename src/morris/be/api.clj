@@ -21,10 +21,10 @@
       :middleware [log/wrap-with-logger]
       :tags ["api"]
 
-      (GET "/board" []
-        :return s/Str
-        :summary "Return an empty Board"
-        (ok (g/dot-str (b/board))))
+      (GET "/state" []
+        :return core/GameState
+        :summary "Return a new game-state"
+        (ok (core/init-game)))
 
       (POST "/piece/:piece/:destination" []
         :return core/GameState
