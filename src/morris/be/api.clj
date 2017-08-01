@@ -6,10 +6,21 @@
             [loom.io :as g]
 						[clojure.data.json :as json]
             [ring.logger.timbre :as log]
+            [compojure.api.exception :as ex]
 						[ring.util.http-response :refer :all]))
+
+(defn bad-request-handler []
+  (fn [^Exception e data request]
+    (println "FFFFFFFFFFFFFFFFFFF")
+    (bad-request {:message (.getMessage e), :type :bad-request})))
 
 (def app
   (api
+    ; {:exceptions 
+    ;   {:handlers 
+    ;     {
+    ;       java.lang.IllegalArgumentException (bad-request-handler)
+    ;     }}}
     {:swagger
      {:ui "/api-docs"
       :spec "/swagger.json"

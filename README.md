@@ -1,5 +1,5 @@
- [![Build Status](https://circleci.com/gh/andeemarks/nmm-clj?style=shield&circle-token=:circle-token)](https://circleci.com/gh/andeemarks/nmm-clj?style=shield&circle-token=:circle-token)
-
+ [![CircleCI](https://circleci.com/gh/andeemarks/nmm-clj.svg?style=svg)](https://circleci.com/gh/andeemarks/nmm-clj)
+ 
 # morris
 
 This is a Clojure implementation of the classic board game [Nine Men's Morris](https://en.wikipedia.org/wiki/Nine_Men%27s_Morris).

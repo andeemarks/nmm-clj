@@ -13,6 +13,17 @@
 
 (def ^:const new-game (core/init-game))
 
+(facts "When making invalid API calls"
+  (fact "Place piece returns a 400 error"
+    (let [game-state-as-json (cheshire/generate-string new-game)
+          response (app (-> (mock/request :post "/game/piece/white-1/xxx")
+                            (mock/content-type "application/json")
+                            (mock/body game-state-as-json)))
+          body     (parse-body (:body response))]
+      (:status response) => 400))
+  (future-fact "Move piece returns a 400 error")
+  (future-fact "Remove piece returns a 400 error"))
+
 (fact "Test placing a piece returns a game-state containing the new piece and removes the piece from the pool"
   (let [game-state-as-json (cheshire/generate-string new-game)
         response (app (-> (mock/request :post "/game/piece/white-1/a1")

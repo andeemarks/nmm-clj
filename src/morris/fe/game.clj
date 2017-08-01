@@ -41,7 +41,6 @@
 	(log/info "PIECE MOVEMENT for piece: " piece)
 	(let [pieces-to-move (find-pieces game-state (:current-player game-state))]
 	  (loop [move-components (input/for-player-move (:current-player game-state) (str " What is your move (from/to) " pieces-to-move "?"))]
-	  	; (println move-components (:current-player game-state) (:pieces-on-board game-state))
 	    (if (board/valid-move? (:current-player game-state) (:pieces-on-board game-state) (:origin move-components) (:destination move-components))
 	    	(assoc (api/move-piece game-state (:origin move-components) (:destination move-components)) :mode mode)
 	      (recur (input/for-player-move (:current-player game-state) (str " That is not a valid move - what is your move (from/to) " pieces-to-move "?")))))))
