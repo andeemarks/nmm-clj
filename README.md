@@ -1,7 +1,9 @@
- [![CircleCI](https://circleci.com/gh/andeemarks/nmm-clj.svg?style=shield&circle-token=:circle-token)](https://circleci.com/gh/andeemarks/nmm-clj)
- 
 # morris
 
+[![CircleCI](https://circleci.com/gh/andeemarks/nmm-clj.svg?style=shield&circle-token=:circle-token)](https://circleci.com/gh/andeemarks/nmm-clj)
+
+ [![Dependencies Status](https://jarkeeper.com/andeemarks/nmm-clj/status.svg)](https://jarkeeper.com/andeemarks/nmm-clj)
+ 
 This is a Clojure implementation of the classic board game [Nine Men's Morris](https://en.wikipedia.org/wiki/Nine_Men%27s_Morris).
 
 The game is played as a two player turn based game, with the command line used for player input and the board shown as an image on the screen.  The UI was a low priority when building this application and a current issue is the need to kill the process rendering the board before you can input your command.  Fixing this will be my next objective.
