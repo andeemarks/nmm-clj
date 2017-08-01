@@ -1,4 +1,4 @@
-https://circleci.com/gh/andeemarks/nmm-clj?style=shield&circle-token=:circle-token
+ [![Build Status](https://circleci.com/gh/andeemarks/nmm-clj?style=shield&circle-token=:circle-token)](https://circleci.com/gh/andeemarks/nmm-clj?style=shield&circle-token=:circle-token)
 
 # morris
 
