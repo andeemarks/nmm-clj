@@ -42,11 +42,11 @@
 
 (facts "moving pieces"
   (fact "calls api after a valid piece to move is provided"
-    (let [before-game-state (assoc game :pieces-on-board {:a1 "white-1"})]
-      (process-round "piece-movement" before-game-state "white-1") =not=> nil
+    (let [game-state (assoc game :pieces-on-board {:a1 "white-1"})]
+      (process-round "piece-movement" game-state "white-1") =not=> nil
       (provided
         (find-pieces anything anything) => "foo"
-        (api/move-piece anything anything anything) => anything :times 1
+        (api/move-piece game-state :a1 :d1) => anything :times 1
         (input/for-player-move anything " What is your move (from/to) foo?") => {:origin :d1 :destination :a1} :times 1
         (input/for-player-move anything " That is not a valid move - what is your move (from/to) foo?") => {:origin :a1 :destination :d1} :times 1))))
 
@@ -56,7 +56,7 @@
       (process-round "piece-removal" game-state nil) =not=> nil
       (provided
         (find-pieces anything anything) => "foo"
-        (api/remove-piece anything anything) => anything :times 1
+        (api/remove-piece game-state :a1) => anything :times 1
         (input/for-piece anything " Mill completed! Which piece do you want to remove foo?" anything) => :d1 :times 1
         (input/for-piece anything " That is not a valid position - which piece to remove foo?" anything) => :a1 :times 1))))
 
@@ -65,6 +65,6 @@
     (let [game-state (assoc game :pieces-on-board {:a1 "black-1"})]
       (process-round "piece-placement" game-state "white-1") =not=> nil
       (provided
-        (api/place-piece anything anything anything) => anything :times 1
+        (api/place-piece game-state "white-1" :d1) => anything :times 1
         (input/for-piece anything " Where do you want to place this piece?" anything) => :a1 :times 1
         (input/for-piece anything " That is not a valid position - where do you want to place this piece?" anything) => :d1 :times 1))))
