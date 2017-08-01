@@ -1,4 +1,4 @@
- [![CircleCI](https://circleci.com/gh/andeemarks/nmm-clj.svg?style=svg)](https://circleci.com/gh/andeemarks/nmm-clj)
+ [![CircleCI](https://circleci.com/gh/andeemarks/nmm-clj.svg?style=shield&circle-token=:circle-token)](https://circleci.com/gh/andeemarks/nmm-clj)
  
 # morris
 
